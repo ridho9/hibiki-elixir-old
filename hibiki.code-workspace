@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "apps/hibiki"
+		},
+		{
+			"path": "apps/line_sdk"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}
