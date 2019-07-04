@@ -1,21 +1,17 @@
 # LineSDK
 
-**TODO: Add description**
+LINE Messaging API SDK for Elixir
 
-## Installation
+## Introduction
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `line_sdk` to your list of dependencies in `mix.exs`:
+The LINE Messaging API SDK for Elixir makes it easy to develop bots using LINE Messaging API, and you can create a sample bot within minutes.
 
-```elixir
-def deps do
-  [
-    {:line_sdk, "~> 0.1.0"}
-  ]
-end
-```
+## Documentation
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/line_sdk](https://hexdocs.pm/line_sdk).
+See the official API documentation for more information
 
+English: https://developers.line.biz/en/docs/messaging-api/overview/
+
+Japanese: https://developers.line.biz/ja/docs/messaging-api/overview/
+
+## Features
