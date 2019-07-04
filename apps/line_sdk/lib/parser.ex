@@ -4,6 +4,12 @@ defmodule LineSDK.Parser do
   """
   alias LineSDK.Models, as: Models
 
+  def parse_from_json(json) do
+    with {:ok, parsed} <- Jason.decode(json) do
+      parsed |> parse
+    end
+  end
+
   def parse(%{"type" => "text", "text" => text, "id" => id}) do
     {:ok, %Models.TextMessage{id: id, text: text}}
   end
@@ -45,24 +51,14 @@ defmodule LineSDK.Parser do
       events
       |> Enum.map(&parse/1)
       |> Enum.unzip()
+      |> elem(1)
 
-    all_ok =
-      events
-      |> elem(0)
-      |> Enum.any?(fn x -> x == :error end)
-
-    if all_ok do
-      {:error, events}
-    else
-      events = elem(events, 1)
-
-      {:ok,
-       %Models.WebhookEvent{
-         destination: destination,
-         events: events
-       }}
-    end
+    {:ok,
+     %Models.WebhookEvent{
+       destination: destination,
+       events: events
+     }}
   end
 
-  def parse(_), do: {:error, :no_match}
+  def parse(x), do: {:error, x}
 end

@@ -90,7 +90,7 @@ defmodule LineSDK.ParserTest do
     assert Parser.parse(input) == {:ok, expect}
   end
 
-  test "parse webhook event fail" do
+  test "parse webhook event when fail to parse a message" do
     input = %{
       "type" => "message",
       "source" => %{
@@ -104,7 +104,11 @@ defmodule LineSDK.ParserTest do
       "events" => [input]
     }
 
-    {code, _} = Parser.parse(input)
-    assert code == :error
+    expect = %Models.WebhookEvent{
+      destination: "dest",
+      events: [%{"message" => %{}, "source" => %{"type" => "user"}, "type" => "message"}]
+    }
+
+    assert Parser.parse(input) == {:ok, expect}
   end
 end
