@@ -1,7 +1,7 @@
 defmodule LineSDK.Client do
   @line_api_url Application.get_env(:line_sdk, :api_url)
 
-  defstruct channel_access_token: "", channel_secret: ""
+  defstruct channel_access_token: nil, channel_secret: nil
   @type t :: %LineSDK.Client{channel_access_token: binary, channel_secret: binary}
 
   defp get(client, url) do
