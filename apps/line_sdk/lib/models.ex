@@ -52,7 +52,9 @@ defmodule LineSDK.Models do
 
     @type t :: %WebhookEvent{
             destination: binary,
-            events: [MessageEvent.t() | map()]
+            events: [event()]
           }
+
+    @type event :: MessageEvent.t()
   end
 end

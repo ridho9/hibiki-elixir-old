@@ -37,12 +37,14 @@ defmodule LineSDK.Plug do
   end
 
   def check_json(conn, _opts) do
-    if get_req_header(conn, "content-type") != ["application/json"] do
+    [content_type] = get_req_header(conn, "content-type")
+
+    if String.starts_with?(content_type, "application/json") do
+      conn
+    else
       conn
       |> send_resp(400, "is not json")
       |> halt()
-    else
-      conn
     end
   end
 
@@ -60,6 +62,14 @@ defmodule LineSDK.Plug do
   end
 
   def handle_message(conn, opts) do
+    events = conn.body_params["events"]
+
+    events
+    |> Enum.map(fn x ->
+      {_, event} = LineSDK.Parser.parse(x)
+      opts.handler.handle(event, opts.client)
+    end)
+
     conn
     |> send_resp(200, "")
   end
