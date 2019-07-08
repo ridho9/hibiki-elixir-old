@@ -4,12 +4,25 @@ defmodule LineSDK.Client do
   defstruct channel_access_token: nil, channel_secret: nil
   @type t :: %LineSDK.Client{channel_access_token: binary, channel_secret: binary}
 
+  def send_reply(client, reply_token, %{} = message),
+    do: send_reply(client, reply_token, [message])
+
+  def send_reply(client, reply_token, messages) do
+    body = %{
+      replyToken: reply_token,
+      messages: messages
+    }
+
+    post(client, "/bot/message/reply", body)
+  end
+
   defp get(client, url) do
     headers = [
       {"Authorization", "Bearer #{client.channel_access_token}"}
     ]
 
     HTTPoison.get(@line_api_url <> url, headers)
+    |> process_api_response
   end
 
   defp post(client, url, data) do
@@ -18,6 +31,16 @@ defmodule LineSDK.Client do
       {"Content-Type", "application/json"}
     ]
 
-    HTTPoison.post(@line_api_url <> url, data, headers)
+    HTTPoison.post(@line_api_url <> url, Jason.encode!(data), headers)
+    |> process_api_response
+  end
+
+  defp process_api_response({:error, _} = resp), do: resp
+
+  defp process_api_response({:ok, resp}) do
+    case resp do
+      %{status_code: 200} -> {:ok}
+      _ -> {:error, Jason.decode!(resp.body)}
+    end
   end
 end

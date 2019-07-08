@@ -18,6 +18,7 @@ defmodule LineSDK.PlugTest do
       :post
       |> conn("/", "ahehehe")
       |> put_req_header("x-line-signature", "1234")
+      |> put_req_header("content-type", "text/plain")
       |> LineSDK.Plug.call(@opts)
 
     assert conn.status == 400
@@ -37,8 +38,8 @@ defmodule LineSDK.PlugTest do
   test "returns 200 when signature match" do
     conn =
       :post
-      |> conn("/", ~S({"a": 1}))
-      |> put_req_header("x-line-signature", "TlFr86YLw3P4l5JkxcmtYPTNEmq9ZDUoDfznvLt9BZM=")
+      |> conn("/", ~S({"events": []}))
+      |> put_req_header("x-line-signature", "5FjeSIDeeopATDtOCRvTreK7yBLWJLSsEKINECUhVt4=")
       |> put_req_header("content-type", "application/json")
       |> LineSDK.Plug.call(@opts)
 

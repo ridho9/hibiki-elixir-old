@@ -20,7 +20,7 @@ use Mix.Config
 #
 #     config :logger, level: :info
 #
-config :line_sdk, api_url: "https://api.line.me/v2/"
+config :line_sdk, api_url: "https://api.line.me/v2"
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

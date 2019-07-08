@@ -65,9 +65,8 @@ defmodule LineSDK.Plug do
     events = conn.body_params["events"]
 
     events
-    |> Enum.map(fn x ->
-      {_, event} = LineSDK.Parser.parse(x)
-      opts.handler.handle(event, opts.client)
+    |> Enum.map(fn event ->
+      opts.handler.handle(event, client: opts.client)
     end)
 
     conn
