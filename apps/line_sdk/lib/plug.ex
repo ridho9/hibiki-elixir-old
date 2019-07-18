@@ -62,7 +62,9 @@ defmodule LineSDK.Plug do
   end
 
   def handle_message(conn, opts) do
-    events = conn.body_params["events"]
+    # recase map key from pascal to snake
+    body = conn.body_params |> Recase.Enumerable.convert_keys(&Recase.to_snake/1)
+    events = body["events"]
 
     events
     |> Enum.map(fn event ->
