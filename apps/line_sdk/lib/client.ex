@@ -9,8 +9,8 @@ defmodule LineSDK.Client do
 
   def send_reply(client, reply_token, messages) do
     body = %{
-      replyToken: reply_token,
-      messages: messages
+      "reply_token" => reply_token,
+      "messages" => messages
     }
 
     post(client, "/bot/message/reply", body)
@@ -30,6 +30,8 @@ defmodule LineSDK.Client do
       {"Authorization", "Bearer #{client.channel_access_token}"},
       {"Content-Type", "application/json"}
     ]
+
+    data = Recase.Enumerable.convert_keys(data, &Recase.to_camel/1)
 
     HTTPoison.post(@line_api_url <> url, Jason.encode!(data), headers)
     |> process_api_response
