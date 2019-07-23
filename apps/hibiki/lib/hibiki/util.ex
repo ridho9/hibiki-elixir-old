@@ -11,13 +11,10 @@ defmodule Hibiki.Util do
         {:error, "no match"}
 
       [head | _] ->
-        {_, rest} = String.split_at(input, String.length(head))
-        rest = String.trim_leading(rest)
-
-        first_char = String.at(head, 0)
+        rest = input |> String.split_at(String.length(head)) |> elem(1) |> String.trim_leading()
 
         head =
-          if first_char == "\"" || first_char == "'" || first_char == "`" do
+          if String.at(head, 0) in ["\"", "'", "`"] do
             String.slice(head, 1..-2)
           else
             head

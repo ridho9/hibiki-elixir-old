@@ -1,15 +1,15 @@
 defmodule Hibiki.Context do
-  defstruct client: nil, messages: [], event: nil, replied: false
+  defstruct client: nil, messages: [], event: nil, replied: false, rest_arg: nil, command: nil
 
   alias Hibiki.Context
 
-  def set_event(ctx, event) do
-    %{ctx | event: event}
-  end
+  def set_event(ctx, event), do: %{ctx | event: event}
 
-  def set_client(ctx, client) do
-    %{ctx | client: client}
-  end
+  def set_client(ctx, client), do: %{ctx | client: client}
+
+  def set_rest_arg(ctx, r), do: %{ctx | rest_arg: r}
+
+  def set_command(ctx, cmd), do: %{ctx | command: cmd}
 
   def add_text_message(%Context{messages: messages} = ctx, text) do
     messages = messages ++ [%{"type" => "text", "text" => text}]
