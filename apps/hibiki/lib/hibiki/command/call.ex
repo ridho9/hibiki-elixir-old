@@ -7,11 +7,7 @@ defmodule Hibiki.Command.Call do
 
   def handle(_args, ctx) do
     ctx
-    |> Hibiki.Context.add_text_message(
-      "Roger, Hibiki, heading out!\n\nI'll never forget Tenshi..."
-    )
-    |> Hibiki.Context.send_reply()
-
-    {:ok}
+    |> add_text_message("Roger, Hibiki, heading out!\n\nI'll never forget Tenshi...")
+    |> send_reply()
   end
 end

@@ -66,6 +66,14 @@ defmodule Hibiki.Command.OptionsTest do
     assert Options.parse(input_options, input_text) == expected
   end
 
+  test "named empty" do
+    input_options = %Options{} |> Options.add_named("name", "")
+    input_text = ""
+    expected = {:ok, %{"name" => ""}}
+
+    assert Options.parse(input_options, input_text) == expected
+  end
+
   test "named with quote" do
     input_options = %Options{} |> Options.add_named("name", "")
     input_text = ~s("qwe asd" 123)

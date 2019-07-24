@@ -1,29 +1,30 @@
 defmodule Hibiki.Registry do
   defmodule Default do
     alias Hibiki.Command, as: Command
-    def all, do: [Command.Call]
+    def all, do: [Command.Call, Command.Help]
   end
 
-  def command_from_text(_, ""), do: {:error, "empty input"}
-  def command_from_text(_, nil), do: {:error, "empty input"}
+  def command_from_text(_, ""), do: {:error, "no command"}
+  def command_from_text(_, nil), do: {:error, "no command"}
+  def command_from_text(registry, input), do: command_from_text(registry, input, [])
 
-  def command_from_text(registry, input) do
+  def command_from_text(registry, input, parent) do
     [head | rest] = input |> String.trim() |> String.split(" ", parts: 2)
 
     case Enum.find(registry, fn x -> x.name() == head end) do
       nil ->
-        {:error, "no command found"}
+        {:error, "can't find command '#{head}'"}
 
       command ->
         rest =
           case rest do
-            [] -> nil
+            [] -> ""
             [rest] -> String.trim(rest)
           end
 
-        case command_from_text(command.subcommands, rest) do
-          {:error, _} -> {:ok, command, rest}
-          {:ok, sc, sr} -> {:ok, sc, sr}
+        case command_from_text(command.subcommands, rest, parent ++ [command]) do
+          {:error, _} -> {:ok, command, rest, parent}
+          result -> result
         end
     end
   end

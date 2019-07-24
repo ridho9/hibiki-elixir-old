@@ -2,7 +2,7 @@ defmodule Hibiki.Handler do
   require Logger
 
   alias Hibiki.Registry
-  alias Hibiki.Command
+  alias Hibiki.Command.Options
   alias Hibiki.Context
 
   @behaviour LineSDK.Handler
@@ -38,20 +38,45 @@ defmodule Hibiki.Handler do
         %{"reply_token" => reply_token} = event,
         client: client
       ) do
-    with {:ok, command, args} <-
+    with {:ok, command, args, _} <-
            Registry.command_from_text(Registry.Default.all(), text),
-         {:ok, args, rest_arg} <- command.options() |> Command.Options.parse(args),
-         ctx = %Context{client: client, event: event, rest_arg: rest_arg, command: command},
-         {:ok} <- call_command_handler(command, args, ctx) do
+         {:ok, args} <- Options.parse(command.options, args),
+         ctx = %Context{
+           client: client,
+           event: event,
+           command: command
+         },
+         _ <- call_command_handler(command, args, ctx) do
       {:ok}
     else
       {:error, message} = err ->
-        LineSDK.Client.send_reply(client, reply_token, %{type: "text", text: "Ugh.. #{message}"})
+        LineSDK.Client.send_reply(client, reply_token, %{
+          "type" => "text",
+          "text" => "Ugh.. #{message}"
+        })
+
         err
     end
   end
 
   def call_command_handler(command, args, ctx) do
-    command.handle(args, ctx)
+    token = ctx.event["reply_token"] |> String.slice(-6..-1)
+    Logger.metadata(token: token, args: args, ctx: ctx)
+    Logger.debug("start handle #{command}")
+
+    result =
+      case command.handle(args, ctx) do
+        {:error, err} = result ->
+          Logger.error(err)
+          result
+
+        result ->
+          result
+      end
+
+    Logger.debug("end handle #{command}")
+    Logger.metadata(token: nil, args: nil, ctx: nil)
+
+    result
   end
 end

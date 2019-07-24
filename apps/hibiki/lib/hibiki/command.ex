@@ -3,10 +3,12 @@ defmodule Hibiki.Command do
   @callback description() :: String.t()
   @callback subcommands() :: [module()]
   @callback options() :: any
-  @callback handle(args :: any, context :: any) :: {:ok} | {:error, any()}
+  @callback handle(args :: any, context :: any) :: Hibiki.Context.t() | {:error, any()}
 
   defmacro __using__(_opts) do
     quote do
+      alias Hibiki.Command.Options
+      import Hibiki.Context
       @behaviour Hibiki.Command
       def description, do: ""
       def subcommands, do: []
@@ -26,6 +28,13 @@ defmodule Hibiki.Command do
     def parse(%Options{named_key: []}, input, r)
         when input == "" or input == nil do
       {:ok, r}
+    end
+
+    def parse(%Options{named_key: [key]}, input, r) do
+      if not String.starts_with?(input, "-") do
+        {:ok, Map.put(r, key, input)}
+      else
+      end
     end
 
     def parse(%Options{named_key: named_key}, input, _)

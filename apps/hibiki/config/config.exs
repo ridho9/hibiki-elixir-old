@@ -16,7 +16,7 @@ config :hibiki,
   channel_access_token: "",
   channel_secret: ""
 
-config :logger, :console, metadata: [:reply_token]
+config :logger, :console, metadata: [:token]
 
 #
 # and access this configuration in your application as:
