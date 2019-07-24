@@ -1,4 +1,4 @@
 defmodule LineSDK.Handler do
-  @callback handle(event :: LineSDK.Models.WebhookEvent.event(), opts :: keyword()) ::
+  @callback handle(event :: any(), opts :: keyword()) ::
               {:ok} | {:error, reason :: term}
 end
