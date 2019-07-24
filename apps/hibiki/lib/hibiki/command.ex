@@ -25,7 +25,7 @@ defmodule Hibiki.Command do
 
     def parse(%Options{named_key: []}, input, r)
         when input == "" or input == nil do
-      {:ok, r, input}
+      {:ok, r}
     end
 
     def parse(%Options{named_key: named_key}, input, _)
@@ -65,7 +65,10 @@ defmodule Hibiki.Command do
 
         # handle no named key
         options.named_key == [] ->
-          {:ok, result, input}
+          {:ok, Map.put(result, "rest", input)}
+
+        length(options.named_key) == 1 ->
+          {:ok, Map.put(result, options.named_key |> hd, input)}
 
         # handle if have named key
         true ->
