@@ -7,7 +7,7 @@ defmodule Hibiki.Command do
 
   defmacro __using__(_opts) do
     quote do
-      alias Hibiki.Command.Options
+      alias Hibiki.Command.Options, as: Options
       import Hibiki.Context
       @behaviour Hibiki.Command
       def description, do: ""
