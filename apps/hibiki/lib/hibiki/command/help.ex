@@ -6,10 +6,9 @@ defmodule Hibiki.Command.Help do
 
   def description, do: "When you don't know what things do"
 
-  def options, do: %Options{} |> Options.add_named("query", "query")
+  def options, do: %Options{allow_empty_last: true} |> Options.add_named("query", "query")
 
   def handle(args, ctx) do
-    IO.inspect(args)
     query = args["query"]
 
     handle_query(query, ctx)
