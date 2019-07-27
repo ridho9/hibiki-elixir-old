@@ -69,6 +69,14 @@ defmodule Hibiki.Command.OptionsTest do
   test "named empty" do
     input_options = %Options{} |> Options.add_named("name", "")
     input_text = ""
+    expected = {:error, "expected argument 'name'"}
+
+    assert Options.parse(input_options, input_text) == expected
+  end
+
+  test "named allow empty last" do
+    input_options = %Options{allow_empty_last: true} |> Options.add_named("name", "")
+    input_text = ""
     expected = {:ok, %{"name" => ""}}
 
     assert Options.parse(input_options, input_text) == expected
@@ -86,6 +94,24 @@ defmodule Hibiki.Command.OptionsTest do
     input_options = %Options{} |> Options.add_named("a", "") |> Options.add_named("b", "")
     input_text = ~s(aaa bbb ccc)
     expected = {:ok, %{"a" => "aaa", "b" => "bbb ccc"}}
+
+    assert Options.parse(input_options, input_text) == expected
+  end
+
+  test "two named empty last" do
+    input_options = %Options{} |> Options.add_named("a", "") |> Options.add_named("b", "")
+    input_text = ~s(aaa)
+    expected = {:error, "expected argument 'b'"}
+
+    assert Options.parse(input_options, input_text) == expected
+  end
+
+  test "two named empty last allow" do
+    input_options =
+      %Options{allow_empty_last: true} |> Options.add_named("a", "") |> Options.add_named("b", "")
+
+    input_text = ~s(aaa)
+    expected = {:ok, %{"a" => "aaa", "b" => ""}}
 
     assert Options.parse(input_options, input_text) == expected
   end

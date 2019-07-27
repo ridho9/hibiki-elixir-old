@@ -19,27 +19,33 @@ defmodule Hibiki.Command do
   end
 
   defmodule Options do
-    defstruct named: %{}, named_key: [], flag: %{}, optional: %{}
+    defstruct named: %{}, named_key: [], flag: %{}, optional: %{}, allow_empty_last: false
 
     import Hibiki.Util, only: [next_token: 1]
 
-    def parse(options, text), do: parse(options, text, %{})
+    def fill_defaults(options) do
+      default_flag =
+        options.flag
+        |> Enum.reduce(%{}, fn {key, _}, acc -> Map.put(acc, key, false) end)
+
+      options.optional
+      |> Enum.reduce(default_flag, fn {key, _}, acc -> Map.put(acc, key, nil) end)
+    end
+
+    def parse(options, text), do: parse(options, text, fill_defaults(options))
 
     def parse(%Options{named_key: []}, input, r)
         when input == "" or input == nil do
       {:ok, r}
     end
 
-    def parse(%Options{named_key: [key]}, input, r) do
-      if not String.starts_with?(input, "-") do
-        {:ok, Map.put(r, key, input)}
-      else
-      end
-    end
-
-    def parse(%Options{named_key: named_key}, input, _)
+    def parse(%Options{named_key: [named_key], allow_empty_last: allow_empty}, input, r)
         when input == "" or input == nil do
-      {:error, "expected argument '#{hd(named_key)}'"}
+      if allow_empty do
+        {:ok, Map.put(r, named_key, input)}
+      else
+        {:error, "expected argument '#{named_key}'"}
+      end
     end
 
     def parse(options, input, result) do
