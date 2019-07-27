@@ -23,6 +23,31 @@ defmodule Hibiki.Command do
 
     import Hibiki.Util, only: [next_token: 1]
 
+    def generate_usage_line(%Options{
+          flag: flag,
+          optional: optional,
+          named_key: named_key,
+          allow_empty_last: allow_empty_last
+        }) do
+      flag_line = if Enum.empty?(flag), do: "", else: "[..flags] "
+
+      optional_line = if Enum.empty?(optional), do: "", else: "[..optionals] "
+
+      last_key = List.last(named_key)
+
+      named_line =
+        for key <- named_key do
+          if key == last_key and allow_empty_last do
+            "[#{key}]"
+          else
+            "<#{key}>"
+          end
+        end
+        |> Enum.join(" ")
+
+      "#{flag_line}#{optional_line}#{named_line}" |> String.trim()
+    end
+
     def fill_defaults(options) do
       default_flag =
         options.flag
@@ -95,25 +120,6 @@ defmodule Hibiki.Command do
       end
     end
 
-    defp put_result(map, key, value) do
-      key = to_number(key)
-      value = to_number(value)
-      Map.put(map, key, value)
-    end
-
-    defp to_number(input) do
-      case Integer.parse(input) do
-        {num, ""} ->
-          num
-
-        _ ->
-          case Float.parse(input) do
-            {num, ""} -> num
-            _ -> input
-          end
-      end
-    end
-
     def add_named(%Options{named: named, named_key: named_key} = opt, name, desc) do
       named = named |> Map.put(name, desc)
 
@@ -135,6 +141,25 @@ defmodule Hibiki.Command do
     def add_optional(%Options{optional: optional} = opt, name, desc) do
       optional = Map.put(optional, name, desc)
       opt |> Map.put(:optional, optional)
+    end
+
+    defp put_result(map, key, value) do
+      key = to_number(key)
+      value = to_number(value)
+      Map.put(map, key, value)
+    end
+
+    defp to_number(input) do
+      case Integer.parse(input) do
+        {num, ""} ->
+          num
+
+        _ ->
+          case Float.parse(input) do
+            {num, ""} -> num
+            _ -> input
+          end
+      end
     end
   end
 end
