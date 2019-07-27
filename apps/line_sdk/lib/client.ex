@@ -16,7 +16,7 @@ defmodule LineSDK.Client do
     post(client, "/bot/message/reply", body)
   end
 
-  defp get(client, url) do
+  def get(client, url) do
     headers = [
       {"Authorization", "Bearer #{client.channel_access_token}"}
     ]
@@ -24,7 +24,7 @@ defmodule LineSDK.Client do
     HTTPoison.get(@line_api_url <> url, headers)
   end
 
-  defp post(client, url, data) do
+  def post(client, url, data) do
     headers = [
       {"Authorization", "Bearer #{client.channel_access_token}"},
       {"Content-Type", "application/json"}

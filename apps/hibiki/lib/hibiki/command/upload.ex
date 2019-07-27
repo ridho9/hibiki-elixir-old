@@ -15,12 +15,8 @@ defmodule Hibiki.Command.Upload do
       result = HTTPoison.post(url, data)
       File.rm(path)
 
-      case result do
-        {:ok, %HTTPoison.Response{body: link}} ->
-          {:ok, link}
-
-        err ->
-          err
+      with {:ok, %HTTPoison.Response{body: link}} <- result do
+        {:ok, link}
       end
     end
   end
