@@ -11,7 +11,11 @@ defmodule Hibiki.Util do
         {:error, "no match"}
 
       [head | _] ->
-        rest = input |> String.split_at(String.length(head)) |> elem(1) |> String.trim_leading()
+        rest =
+          input
+          |> String.split_at(String.length(head))
+          |> elem(1)
+          |> String.trim_leading()
 
         head =
           if String.at(head, 0) in ["\"", "'", "`"] do
@@ -21,6 +25,19 @@ defmodule Hibiki.Util do
           end
 
         {:ok, head, rest}
+    end
+  end
+
+  def tokenize(nil), do: []
+  def tokenize(input), do: tokenize(input, [])
+
+  defp tokenize(input, acc) do
+    case next_token(input) do
+      {:ok, token, rest} ->
+        tokenize(rest, acc ++ [token])
+
+      {:error, _} ->
+        acc
     end
   end
 end

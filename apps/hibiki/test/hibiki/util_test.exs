@@ -61,4 +61,22 @@ defmodule Hibiki.UtilTest do
     expect = {:ok, "", "asdf"}
     assert Util.next_token(input) == expect
   end
+
+  test "tokenize 1" do
+    input = ~s[a b c]
+    expect = ["a", "b", "c"]
+    assert Util.tokenize(input) == expect
+  end
+
+  test "tokenize 2" do
+    input = ~s[a b c "d e f"]
+    expect = ["a", "b", "c", "d e f"]
+    assert Util.tokenize(input) == expect
+  end
+
+  test "tokenize 3" do
+    input = ~s[]
+    expect = []
+    assert Util.tokenize(input) == expect
+  end
 end
