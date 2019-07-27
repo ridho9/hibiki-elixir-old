@@ -1,7 +1,7 @@
 defmodule Hibiki.Registry do
   defmodule Default do
     alias Hibiki.Command, as: Command
-    def all, do: [Command.Calc, Command.Call, Command.Help]
+    def all, do: [Command.Calc, Command.Call, Command.Chs, Command.Help]
   end
 
   def command_from_text(_, ""), do: {:error, "no command"}
