@@ -46,7 +46,7 @@ defmodule Hibiki.Handler do
            event: event,
            command: command
          },
-         _ <- call_command_handler(command, args, ctx) do
+         {:ok, _} <- call_command_handler(command, args, ctx) do
       {:ok}
     else
       {:error, message} = err ->
@@ -71,7 +71,7 @@ defmodule Hibiki.Handler do
           result
 
         result ->
-          result
+          {:ok, result}
       end
 
     Logger.debug("end handle #{command}")
