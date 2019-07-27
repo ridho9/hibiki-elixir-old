@@ -28,6 +28,21 @@ defmodule Hibiki.Context do
     %{ctx | messages: messages}
   end
 
+  def add_image_message(ctx, original_url) do
+    add_image_message(ctx, original_url, original_url)
+  end
+
+  def add_image_message(%Context{messages: messages} = ctx, original_url, preview_url) do
+    image_message = %{
+      "type" => "image",
+      "original_content_url" => original_url,
+      "preview_image_url" => preview_url
+    }
+
+    messages = messages ++ [image_message]
+    %{ctx | messages: messages}
+  end
+
   def send_reply(
         %Context{client: client, messages: messages, event: %{"reply_token" => reply_token}} = ctx
       ) do
