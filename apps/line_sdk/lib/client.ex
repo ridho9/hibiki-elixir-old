@@ -22,7 +22,6 @@ defmodule LineSDK.Client do
     ]
 
     HTTPoison.get(@line_api_url <> url, headers)
-    |> process_api_response
   end
 
   defp post(client, url, data) do
@@ -33,16 +32,8 @@ defmodule LineSDK.Client do
 
     data = Recase.Enumerable.convert_keys(data, &Recase.to_camel/1)
 
-    HTTPoison.post(@line_api_url <> url, Jason.encode!(data), headers)
-    |> process_api_response
-  end
-
-  defp process_api_response({:error, _} = resp), do: resp
-
-  defp process_api_response({:ok, resp}) do
-    case resp do
-      %{status_code: 200} -> {:ok}
-      _ -> {:error, Jason.decode!(resp.body)}
+    with {:ok, data} <- Jason.encode(data) do
+      HTTPoison.post(@line_api_url <> url, data, headers)
     end
   end
 end
