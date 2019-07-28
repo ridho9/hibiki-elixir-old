@@ -19,6 +19,7 @@ defmodule Hibiki.Command.Help do
       Registry.Default.all()
       |> Enum.filter(fn x -> x.private() == false end)
       |> Enum.map(fn x -> x.name() end)
+      |> Enum.sort()
       |> Enum.join(", ")
 
     ctx
