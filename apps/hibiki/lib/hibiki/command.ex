@@ -3,6 +3,7 @@ defmodule Hibiki.Command do
   @callback description() :: String.t()
   @callback subcommands() :: [module()]
   @callback options() :: any
+  @callback private() :: bool
   @callback handle(args :: any, context :: any) :: Hibiki.Context.t() | {:error, any()}
 
   defmacro __using__(_opts) do
