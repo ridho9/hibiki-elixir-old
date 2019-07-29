@@ -15,7 +15,8 @@ config :hibiki,
   port: 8080,
   channel_access_token: "",
   channel_secret: "",
-  admin_id: []
+  admin_id: [],
+  ecto_repos: [Hibiki.Repo]
 
 config :hibiki, Hibiki.Repo,
   database: "hibiki",
