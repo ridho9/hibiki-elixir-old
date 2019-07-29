@@ -95,7 +95,7 @@ defmodule Hibiki.Command.Options do
     end
   end
 
-  def add_named(%Options{named: named, named_key: named_key} = opt, name, desc) do
+  def add_named(%Options{named: named, named_key: named_key} = opt, name, desc \\ "") do
     named = named |> Map.put(name, desc)
 
     named_key =
@@ -108,12 +108,12 @@ defmodule Hibiki.Command.Options do
     |> Map.put(:named_key, named_key)
   end
 
-  def add_flag(%Options{flag: flag} = opt, name, desc) do
+  def add_flag(%Options{flag: flag} = opt, name, desc \\ "") do
     flag = Map.put(flag, name, desc)
     opt |> Map.put(:flag, flag)
   end
 
-  def add_optional(%Options{optional: optional} = opt, name, desc) do
+  def add_optional(%Options{optional: optional} = opt, name, desc \\ "") do
     optional = Map.put(optional, name, desc)
     opt |> Map.put(:optional, optional)
   end
