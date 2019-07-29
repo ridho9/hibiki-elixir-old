@@ -12,7 +12,8 @@ defmodule Hibiki.Application do
       # Starts a worker by calling: Hibiki.Worker.start_link(arg)
       # {Hibiki.Worker, arg}
       {Plug.Cowboy,
-       scheme: :http, plug: Hibiki.Router, options: [port: Application.get_env(:hibiki, :port)]}
+       scheme: :http, plug: Hibiki.Router, options: [port: Application.get_env(:hibiki, :port)]},
+      {Hibiki.Repo, []}
     ]
 
     Logger.info("Starting application...")

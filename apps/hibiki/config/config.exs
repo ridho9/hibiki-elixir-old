@@ -17,6 +17,12 @@ config :hibiki,
   channel_secret: "",
   admin_id: []
 
+config :hibiki, Hibiki.Repo,
+  database: "hibiki",
+  username: "user",
+  password: "pass",
+  hostname: "localhost"
+
 config :logger, :console, metadata: [:token]
 
 #
