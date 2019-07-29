@@ -14,7 +14,8 @@ config :hibiki,
   host: "localhost",
   port: 8080,
   channel_access_token: "",
-  channel_secret: ""
+  channel_secret: "",
+  admin_id: []
 
 config :logger, :console, metadata: [:token]
 
