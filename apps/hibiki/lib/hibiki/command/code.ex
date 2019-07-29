@@ -2,11 +2,10 @@ defmodule Hibiki.Command.Code do
   use Hibiki.Command
 
   def name, do: "code"
-  def options, do: %Options{} |> Options.add_named("code", "code")
-
+  def options, do: %Options{} |> Options.add_named("code") |> Options.add_flag("o")
   def private, do: true
 
-  def handle(%{"code" => code}, ctx) do
+  def handle(%{"code" => code, "o" => o}, ctx) do
     url =
       "https://opener.now.sh/api/data/#{code}"
       |> String.trim()
@@ -33,8 +32,45 @@ defmodule Hibiki.Command.Code do
         ]
         |> Enum.join("\n")
 
-      ctx |> add_text_message(message) |> send_reply()
+      ctx
+      |> add_text_message(message)
+      |> (fn x ->
+            if not o do
+              x
+            else
+              x |> add_message(create_button_message(code))
+            end
+          end).()
+      |> send_reply()
     end
+  end
+
+  defp create_button_message(code) do
+    action = %{
+      "type" => "uri",
+      "label" => "open",
+      "uri" => "https://nhentai.net/g/#{code}"
+    }
+
+    %{
+      "type" => "flex",
+      "alt_text" => "Open",
+      "contents" => %{
+        "type" => "bubble",
+        "body" => %{
+          "type" => "box",
+          "layout" => "vertical",
+          "spacing" => "none",
+          "margin" => "none",
+          "contents" => [
+            %{
+              "type" => "button",
+              "action" => action
+            }
+          ]
+        }
+      }
+    }
   end
 
   defp get_tags_by_type(tags, type) do
