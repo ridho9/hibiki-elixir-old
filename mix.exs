@@ -5,7 +5,13 @@ defmodule HibikiElixir.MixProject do
     [
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      releases: [
+        hibiki: [
+          version: "0.1.0",
+          applications: [hibiki: :permanent]
+        ]
+      ]
     ]
   end
 
