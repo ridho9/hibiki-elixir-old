@@ -35,10 +35,10 @@ defmodule Hibiki.Command.Code do
       ctx
       |> add_text_message(message)
       |> (fn x ->
-            if not o do
-              x
-            else
+            if o do
               x |> add_message(create_button_message(code))
+            else
+              x
             end
           end).()
       |> send_reply()

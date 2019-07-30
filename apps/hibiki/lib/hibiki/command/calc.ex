@@ -1,5 +1,6 @@
 defmodule Hibiki.Command.Calc do
   use Hibiki.Command
+  alias Hibiki.Command.Upload
 
   def name, do: "calc"
 
@@ -13,14 +14,14 @@ defmodule Hibiki.Command.Calc do
 
   def handle(%{"query" => query, "i" => image}, ctx) do
     with {:ok, %{"results" => result}} <- calculate_query(query), result = result |> hd do
-      if not image do
-        %{"out" => result} = result
-        ctx |> add_text_message("#{query} = #{result}") |> send_reply()
-      else
+      if image do
         with %{"img64" => binary} = result,
-             {:ok, link} <- Hibiki.Command.Upload.upload_base64_to_catbox(binary) do
+             {:ok, link} <- Upload.upload_base64_to_catbox(binary) do
           ctx |> add_image_message(link) |> send_reply()
         end
+      else
+        %{"out" => result} = result
+        ctx |> add_text_message("#{query} = #{result}") |> send_reply()
       end
     end
   end

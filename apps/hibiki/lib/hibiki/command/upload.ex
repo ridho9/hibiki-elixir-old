@@ -4,7 +4,7 @@ defmodule Hibiki.Command.Upload do
          {:ok, binary} <- Base.decode64(string),
          :ok <- File.write(path, binary),
          {:ok, mime} <- mime_file(path),
-         ext = :mimerl.mime_to_exts(mime) |> hd do
+         ext = mime |> :mimerl.mime_to_exts() |> hd do
       file =
         {:file, path,
          {"form-data", [name: "fileToUpload", filename: Path.basename(path) <> ".#{ext}"]}, []}
