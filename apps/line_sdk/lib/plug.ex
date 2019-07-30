@@ -56,7 +56,7 @@ defmodule LineSDK.Plug do
       conn
     else
       conn
-      |> send_resp(404, "invalid signature")
+      |> send_resp(401, "invalid signature")
       |> halt
     end
   end

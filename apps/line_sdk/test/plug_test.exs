@@ -24,7 +24,7 @@ defmodule LineSDK.PlugTest do
     assert conn.status == 400
   end
 
-  test "returns 404 when signature doesn't match" do
+  test "returns 401 when signature doesn't match" do
     conn =
       :post
       |> conn("/", ~S({"a": 1}))
@@ -32,7 +32,7 @@ defmodule LineSDK.PlugTest do
       |> put_req_header("content-type", "application/json")
       |> LineSDK.Plug.call(@opts)
 
-    assert conn.status == 404
+    assert conn.status == 401
   end
 
   test "returns 200 when signature match" do
