@@ -32,8 +32,7 @@ defmodule LineSDK.MixProject do
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.1"},
       {:mock, "~> 0.3.0", only: :test},
-      {:plug, "~> 1.8"},
-      {:dialyxir, "~> 0.4", only: [:dev]}
+      {:plug, "~> 1.8"}
     ]
   end
 end

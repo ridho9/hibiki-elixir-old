@@ -67,7 +67,7 @@ defmodule LineSDK.Plug do
     events = body["events"]
 
     events
-    |> Enum.map(fn event ->
+    |> Enum.each(fn event ->
       opts.handler.handle(event, client: opts.client)
     end)
 
