@@ -1,20 +1,45 @@
 # This file is responsible for configuring your application
 # and its dependencies with the aid of the Mix.Config module.
-use Mix.Config
+import Config
 
-# By default, the umbrella project as well as each child
-# application will require this configuration file, as
-# configuration and dependencies are shared in an umbrella
-# project. While one could configure all applications here,
-# we prefer to keep the configuration of each individual
-# child application in their own app, but all other
-# dependencies, regardless if they belong to one or multiple
-# apps, should be configured in the umbrella to avoid confusion.
-import_config "../apps/*/config/config.exs"
+# This configuration is loaded before any dependency and is restricted
+# to this project. If another project depends on this project, this
+# file won't be loaded nor affect the parent project. For this reason,
+# if you want to provide default values for your application for
+# third-party users, it should be done in your "mix.exs" file.
 
-# Sample configuration (overrides the imported configuration above):
+# You can configure your application as:
 #
-#     config :logger, :console,
-#       level: :info,
-#       format: "$date $time [$level] $metadata$message\n",
-#       metadata: [:user_id]
+config :hibiki,
+  host: "localhost",
+  port: 8080,
+  channel_access_token: "",
+  channel_secret: "",
+  admin_id: [],
+  ecto_repos: [Hibiki.Repo]
+
+config :hibiki, Hibiki.Repo,
+  database: "hibiki",
+  username: "user",
+  password: "pass",
+  hostname: "localhost"
+
+config :logger, :console, metadata: [:token]
+
+#
+# and access this configuration in your application as:
+#
+#     Application.get_env(:hibiki, :key)
+#
+# You can also configure a third-party app:
+#
+#     config :logger, level: :info
+#
+
+# It is also possible to import configuration files, relative to this
+# directory. For example, you can emulate configuration per environment
+# by uncommenting the line below and defining dev.exs, test.exs and such.
+# Configuration from the imported file will override the ones defined
+# here (which is why it is important to import them last).
+#
+import_config "#{Mix.env()}.exs"

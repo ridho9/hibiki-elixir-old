@@ -21,3 +21,6 @@ erl_crash.dump
 
 
 .elixir_ls
+
+config/dev.exs
+config/prod.exs
