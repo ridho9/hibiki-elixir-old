@@ -36,6 +36,7 @@ defmodule Hibiki.MixProject do
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.1"},
       {:line_sdk, in_umbrella: true},
+      {:mock, "~> 0.3.0", only: [:test]},
       {:plug_cowboy, "~> 2.1"}
     ]
   end

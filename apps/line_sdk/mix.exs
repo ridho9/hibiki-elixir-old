@@ -31,7 +31,7 @@ defmodule LineSDK.MixProject do
       {:recase, "~> 0.5"},
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.1"},
-      {:mock, "~> 0.3.0", only: :test},
+      {:mock, "~> 0.3.0", only: [:test]},
       {:plug, "~> 1.8"}
     ]
   end

@@ -29,10 +29,6 @@ defmodule Hibiki.Handler do
     end
   end
 
-  def handle_message(_message, _reply_token, _opts) do
-    # {:error, message}
-  end
-
   def handle_text_message(
         text,
         %{"reply_token" => reply_token} = event,
