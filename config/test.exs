@@ -5,3 +5,10 @@ import Config
 config :hibiki,
   channel_access_token: "cat",
   channel_secret: "cs"
+
+config :hibiki, Hibiki.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "hibiki_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox

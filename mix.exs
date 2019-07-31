@@ -11,7 +11,8 @@ defmodule HibikiElixir.MixProject do
           version: "0.1.0",
           applications: [hibiki: :permanent]
         ]
-      ]
+      ],
+      aliases: aliases()
     ]
   end
 
@@ -24,6 +25,12 @@ defmodule HibikiElixir.MixProject do
     [
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.4", only: [:dev]}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end
