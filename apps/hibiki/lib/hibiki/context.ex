@@ -4,7 +4,8 @@ defmodule Hibiki.Context do
             event: nil,
             replied: false,
             command: nil,
-            args: %{}
+            args: %{},
+            start_time: nil
 
   @type t :: %__MODULE__{
           client: LineSDK.Client.t(),
@@ -12,10 +13,15 @@ defmodule Hibiki.Context do
           event: any,
           replied: bool,
           command: module,
-          args: map
+          args: map,
+          start_time: DateTime.t()
         }
 
   alias Hibiki.Context
+
+  def start_now(ctx) do
+    %{ctx | start_time: DateTime.utc_now()}
+  end
 
   def set_event(ctx, event), do: %{ctx | event: event}
 
