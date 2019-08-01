@@ -11,7 +11,7 @@ import Config
 # You can configure your application as:
 #
 config :hibiki,
-  host: "localhost",
+  ip: {127, 0, 0, 1},
   port: 8080,
   channel_access_token: "",
   channel_secret: "",
