@@ -4,11 +4,10 @@ defmodule Hibiki.Schema.Tag do
   schema "tag" do
     field(:name, :string)
     field(:type, :string)
+    field(:value, :string)
 
-    field(:creator_id, :string)
-
-    field(:scope_type, :string)
-    field(:scope_id, :string)
+    belongs_to(:creator, Hibiki.Schema.Entity, foreign_key: :creator_id)
+    belongs_to(:scope, Hibiki.Schema.Entity, foreign_key: :scope_id)
 
     timestamps()
   end
