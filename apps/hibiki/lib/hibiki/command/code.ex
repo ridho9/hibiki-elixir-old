@@ -24,7 +24,7 @@ defmodule Hibiki.Command.Code do
 
       message =
         [
-          title,
+          "[#{code}]" <> title,
           "Parody: #{parodies}",
           "Tag: #{cat_tags}",
           "Artist: #{artists}",

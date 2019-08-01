@@ -56,9 +56,10 @@ defmodule Hibiki.Handler do
   end
 
   def call_command_handler(command, args, ctx) do
-    ctx = Context.start_now(ctx)
-
-    hook_command_start(ctx)
+    ctx =
+      ctx
+      |> Context.start_now()
+      |> hook_command_start()
 
     result =
       case command.handle(args, ctx) do
@@ -71,19 +72,23 @@ defmodule Hibiki.Handler do
       end
 
     hook_command_end(ctx, result)
-
-    result
   end
 
   def hook_command_start(ctx) do
     token = ctx.event["reply_token"] |> String.slice(-6..-1)
+
     Logger.metadata(token: token, args: ctx.args, ctx: ctx, command: ctx.command)
     Logger.debug("start handle #{ctx.command}")
+
+    ctx
   end
 
-  def hook_command_end(ctx, _result) do
+  def hook_command_end(ctx, result) do
     time_diff = DateTime.diff(DateTime.utc_now(), ctx.start_time, :millisecond)
+
     Logger.debug("end handle #{ctx.command} in #{time_diff}ms", time: time_diff)
     Logger.metadata(token: nil, args: nil, ctx: nil, command: nil)
+
+    result
   end
 end
