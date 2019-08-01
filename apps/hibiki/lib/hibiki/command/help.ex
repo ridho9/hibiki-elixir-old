@@ -40,9 +40,16 @@ defmodule Hibiki.Command.Help do
           |> Enum.join(" ")
 
         usage_line = Options.generate_usage_line(command.options)
+        usage_desc = Options.generate_usage_description(command.options)
 
         help_string =
-          ("Usage: !#{commands} #{usage_line}\n\n" <> "#{command.description()}")
+          [
+            "Usage: !#{commands} #{usage_line}\n",
+            "#{command.description()}\n",
+            usage_desc
+          ]
+          |> Enum.filter(fn x -> String.trim(x) != "" end)
+          |> Enum.join("\n")
           |> String.trim()
 
         ctx |> add_text_message(help_string) |> send_reply()

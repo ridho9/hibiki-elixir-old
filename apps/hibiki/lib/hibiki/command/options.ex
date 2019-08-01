@@ -1,6 +1,14 @@
 defmodule Hibiki.Command.Options do
   defstruct named: %{}, named_key: [], flag: %{}, optional: %{}, allow_empty_last: false
 
+  @type t :: %__MODULE__{
+          named: map,
+          named_key: [binary],
+          flag: map,
+          optional: map,
+          allow_empty_last: bool
+        }
+
   import Hibiki.Util, only: [next_token: 1]
   alias Hibiki.Command.Options
 
@@ -24,6 +32,52 @@ defmodule Hibiki.Command.Options do
       |> Enum.join(" ")
 
     "#{flag_line}#{optional_line}#{named_line}" |> String.trim()
+  end
+
+  def generate_usage_description(%Options{
+        flag: flag,
+        optional: optional,
+        named_key: named_key,
+        named: named
+      }) do
+    flag_desc =
+      if map_size(flag) > 0 do
+        flag
+        |> Enum.map(fn {opt, desc} -> " -#{opt} : #{desc}" end)
+        |> Enum.join("\n")
+        |> (fn x -> "Flags:\n" <> x end).()
+      else
+        ""
+      end
+
+    optional_desc =
+      if map_size(optional) > 0 do
+        optional
+        |> Enum.map(fn {opt, desc} -> " --#{opt} <>: #{desc}" end)
+        |> Enum.join("\n")
+        |> (fn x -> "Optional:\n" <> x end).()
+      else
+        ""
+      end
+
+    named_desc =
+      if length(named_key) > 0 do
+        named_key
+        |> Enum.map(fn key -> " #{key}: #{named[key]}" end)
+        |> Enum.join("\n")
+        |> (fn x -> "Named:\n" <> x end).()
+      else
+        ""
+      end
+
+    [
+      flag_desc,
+      optional_desc,
+      named_desc
+    ]
+    |> Enum.filter(fn x -> String.trim(x) != "" end)
+    |> Enum.join("\n\n")
+    |> String.trim()
   end
 
   def fill_defaults(%Options{flag: flag, optional: optional}) do

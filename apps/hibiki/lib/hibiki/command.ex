@@ -2,7 +2,7 @@ defmodule Hibiki.Command do
   @callback name() :: String.t()
   @callback description() :: String.t()
   @callback subcommands() :: [module()]
-  @callback options() :: any
+  @callback options() :: Hibiki.Command.Options.t()
   @callback private() :: bool
   @callback handle(args :: any, context :: any) :: Hibiki.Context.t() | {:error, any()}
 
