@@ -3,6 +3,7 @@
 import Config
 
 config :hibiki,
+  port: 12345,
   channel_access_token: "cat",
   channel_secret: "cs"
 

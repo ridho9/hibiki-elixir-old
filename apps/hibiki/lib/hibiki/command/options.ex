@@ -9,7 +9,7 @@ defmodule Hibiki.Command.Options do
           allow_empty_last: bool
         }
 
-  import Hibiki.Util, only: [next_token: 1]
+  import Hibiki.Parser, only: [next_token: 1]
   alias Hibiki.Command.Options
 
   def generate_usage_line(%Options{

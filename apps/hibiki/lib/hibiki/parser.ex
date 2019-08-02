@@ -1,4 +1,4 @@
-defmodule Hibiki.Util do
+defmodule Hibiki.Parser do
   def next_token(nil), do: {:error, "empty input"}
   def next_token(""), do: {:error, "empty input"}
 
@@ -29,12 +29,12 @@ defmodule Hibiki.Util do
   end
 
   def tokenize(nil), do: []
-  def tokenize(input), do: tokenize(input, [])
+  def tokenize(input), do: do_tokenize(input, [])
 
-  defp tokenize(input, acc) do
+  defp do_tokenize(input, acc) do
     case next_token(input) do
       {:ok, token, rest} ->
-        tokenize(rest, acc ++ [token])
+        do_tokenize(rest, acc ++ [token])
 
       {:error, _} ->
         acc

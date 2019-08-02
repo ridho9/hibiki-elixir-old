@@ -8,7 +8,7 @@ defmodule Hibiki.Command.Chs do
     do: %Options{} |> Options.add_named("choice", "Choices to select separated by space")
 
   def handle(%{"choice" => choice}, ctx) do
-    choice = Hibiki.Util.tokenize(choice)
+    choice = Hibiki.Parser.tokenize(choice)
 
     result = Enum.random(choice)
 
