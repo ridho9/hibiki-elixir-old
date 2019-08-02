@@ -24,8 +24,22 @@ defmodule Hibiki.Command.Help do
 
     ctx
     |> add_text_message(
-      "Commands list: #{command_list}\n\nUse '!help <command>' for more details"
+      [
+        "Commands list: #{command_list}",
+        "Use '!help <command>' for more details",
+        "Topics list: command",
+        "Use '!help <topic>' for topic explanation"
+      ]
+      |> Enum.join("\n")
     )
+    |> send_reply()
+  end
+
+  def handle_query("command", ctx) do
+    ctx
+    |> add_text_message(~s"""
+    Command system
+    """)
     |> send_reply()
   end
 
