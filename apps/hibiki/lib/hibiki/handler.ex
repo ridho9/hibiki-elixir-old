@@ -3,7 +3,7 @@ defmodule Hibiki.Handler do
 
   alias Hibiki.Command.Options
   alias Hibiki.Context
-  alias Hibiki.Registry
+  alias Hibiki.Command.Registry
 
   @behaviour LineSDK.Handler
 

@@ -1,4 +1,4 @@
-defmodule Hibiki.Registry do
+defmodule Hibiki.Command.Registry do
   defmodule Default do
     alias Hibiki, as: H
 

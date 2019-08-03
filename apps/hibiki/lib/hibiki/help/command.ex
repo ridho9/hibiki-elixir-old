@@ -1,6 +1,6 @@
 defmodule Hibiki.Help.Command do
   use Hibiki.Command
-  alias Hibiki.Registry
+  alias Hibiki.Command.Registry
 
   def name, do: "help"
 
