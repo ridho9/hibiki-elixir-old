@@ -37,6 +37,8 @@ defmodule Hibiki.MixProject do
       {:jason, "~> 1.1"},
       {:line_sdk, in_umbrella: true},
       {:mock, "~> 0.3.0", only: [:test]},
+      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 0.4", only: [:dev]},
       {:plug_cowboy, "~> 2.1"}
     ]
   end
