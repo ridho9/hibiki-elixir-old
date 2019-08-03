@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 MIX_ENV=${MIX_ENV:prod}
 

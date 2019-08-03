@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Should be done after pull and doing migration if needed
 
