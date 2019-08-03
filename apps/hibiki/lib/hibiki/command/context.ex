@@ -1,4 +1,4 @@
-defmodule Hibiki.Context do
+defmodule Hibiki.Command.Context do
   defstruct client: nil,
             messages: [],
             event: nil,
@@ -17,7 +17,7 @@ defmodule Hibiki.Context do
           start_time: DateTime.t()
         }
 
-  alias Hibiki.Context
+  alias __MODULE__
 
   def start_now(ctx) do
     %{ctx | start_time: DateTime.utc_now()}

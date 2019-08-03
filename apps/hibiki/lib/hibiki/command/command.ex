@@ -4,12 +4,12 @@ defmodule Hibiki.Command do
   @callback subcommands() :: [module()]
   @callback options() :: Hibiki.Command.Options.t()
   @callback private() :: bool
-  @callback handle(args :: any, context :: any) :: Hibiki.Context.t() | {:error, any()}
+  @callback handle(args :: any, context :: any) :: Hibiki.Command.Context.t() | {:error, any()}
 
   defmacro __using__(_opts) do
     quote do
       alias Hibiki.Command.Options, as: Options
-      import Hibiki.Context
+      import Hibiki.Command.Context
       @behaviour Hibiki.Command
       def description, do: ""
       def subcommands, do: []

@@ -2,7 +2,7 @@ defmodule Hibiki.Handler do
   require Logger
 
   alias Hibiki.Command.Options
-  alias Hibiki.Context
+  alias Hibiki.Command.Context
   alias Hibiki.Command.Registry
 
   @behaviour LineSDK.Handler
