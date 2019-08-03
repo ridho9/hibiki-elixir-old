@@ -12,36 +12,39 @@ defmodule Hibiki.Code.Command do
       |> URI.encode()
 
     with {:ok, %HTTPoison.Response{body: body}} <- HTTPoison.get(url),
-         {:ok, result} <- Jason.decode(body),
-         %{"title" => title} = result,
-         %{"tags" => tags} = result do
-      title = title["english"] || title["japanese"]
+         {:ok, %{"success" => success} = result} <- Jason.decode(body) do
+      if success do
+        %{"title" => title, "tags" => tags} = result
+        title = title["english"] || title["japanese"]
 
-      artists = get_tags_by_type(tags, "artist")
-      languages = get_tags_by_type(tags, "language")
-      cat_tags = get_tags_by_type(tags, "tag")
-      parodies = get_tags_by_type(tags, "parody")
+        artists = get_tags_by_type(tags, "artist")
+        languages = get_tags_by_type(tags, "language")
+        cat_tags = get_tags_by_type(tags, "tag")
+        parodies = get_tags_by_type(tags, "parody")
 
-      message =
-        [
-          "[#{code}]" <> title,
-          "Parody: #{parodies}",
-          "Tag: #{cat_tags}",
-          "Artist: #{artists}",
-          "Language: #{languages}"
-        ]
-        |> Enum.join("\n")
+        message =
+          [
+            "[#{code}]" <> title,
+            "Parody: #{parodies}",
+            "Tag: #{cat_tags}",
+            "Artist: #{artists}",
+            "Language: #{languages}"
+          ]
+          |> Enum.join("\n")
 
-      ctx
-      |> add_text_message(message)
-      |> (fn x ->
-            if o do
-              x |> add_message(create_button_message(code))
-            else
-              x
-            end
-          end).()
-      |> send_reply()
+        ctx
+        |> add_text_message(message)
+        |> (fn x ->
+              if o do
+                x |> add_message(create_button_message(code))
+              else
+                x
+              end
+            end).()
+      else
+        %{"description" => desc} = result
+        {:error, desc}
+      end
     end
   end
 
