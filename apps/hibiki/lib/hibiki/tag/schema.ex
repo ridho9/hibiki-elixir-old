@@ -1,4 +1,4 @@
-defmodule Hibiki.Schema.Tag do
+defmodule Hibiki.Tag.Schema do
   use Ecto.Schema
 
   schema "tag" do
@@ -6,8 +6,8 @@ defmodule Hibiki.Schema.Tag do
     field(:type, :string)
     field(:value, :string)
 
-    belongs_to(:creator, Hibiki.Schema.Entity, foreign_key: :creator_id)
-    belongs_to(:scope, Hibiki.Schema.Entity, foreign_key: :scope_id)
+    belongs_to(:creator, Hibiki.Entity.Schema, foreign_key: :creator_id)
+    belongs_to(:scope, Hibiki.Entity.Schema, foreign_key: :scope_id)
 
     timestamps()
   end
