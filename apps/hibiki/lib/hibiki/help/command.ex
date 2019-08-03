@@ -1,4 +1,4 @@
-defmodule Hibiki.Command.Help do
+defmodule Hibiki.Help.Command do
   use Hibiki.Command
   alias Hibiki.Registry
 

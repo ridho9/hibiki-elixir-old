@@ -1,4 +1,4 @@
-defmodule Hibiki.Command.Upload do
+defmodule Hibiki.Upload.Lib do
   def upload_base64_to_catbox(string) do
     with {:ok, path} <- Temp.path(),
          {:ok, binary} <- Base.decode64(string),

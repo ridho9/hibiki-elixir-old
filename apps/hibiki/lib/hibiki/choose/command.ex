@@ -1,4 +1,4 @@
-defmodule Hibiki.Command.Chs do
+defmodule Hibiki.Choose.Command do
   use Hibiki.Command
 
   def name, do: "chs"

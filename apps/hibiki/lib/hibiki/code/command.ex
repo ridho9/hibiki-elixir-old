@@ -1,4 +1,4 @@
-defmodule Hibiki.Command.Code do
+defmodule Hibiki.Code.Command do
   use Hibiki.Command
 
   def name, do: "code"
