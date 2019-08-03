@@ -41,6 +41,7 @@ defmodule Hibiki.Code.Command do
                 x
               end
             end).()
+        |> send_reply()
       else
         %{"description" => desc} = result
         {:error, desc}
