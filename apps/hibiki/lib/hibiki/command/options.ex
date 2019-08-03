@@ -43,6 +43,7 @@ defmodule Hibiki.Command.Options do
     flag_desc =
       if map_size(flag) > 0 do
         flag
+        |> Enum.filter(fn {_, desc} -> String.trim(desc) != "" end)
         |> Enum.map(fn {opt, desc} -> " -#{opt} : #{desc}" end)
         |> Enum.join("\n")
         |> (fn x -> "Flags:\n" <> x end).()
@@ -53,6 +54,7 @@ defmodule Hibiki.Command.Options do
     optional_desc =
       if map_size(optional) > 0 do
         optional
+        |> Enum.filter(fn {_, desc} -> String.trim(desc) != "" end)
         |> Enum.map(fn {opt, desc} -> " --#{opt} <>: #{desc}" end)
         |> Enum.join("\n")
         |> (fn x -> "Optional:\n" <> x end).()

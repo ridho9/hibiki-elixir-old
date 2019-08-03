@@ -8,7 +8,8 @@ defmodule Hibiki.Command.Registry do
         H.Call.Command,
         H.Choose.Command,
         H.Help.Command,
-        H.Code.Command
+        H.Code.Command,
+        H.Ryn.Command
       ]
   end
 
