@@ -15,10 +15,6 @@ defmodule Hibiki.Handler do
     handle_message(message, event, opts)
   end
 
-  def handle(_, _) do
-    {:error, "unimplemented"}
-  end
-
   @doc """
   Handle message, receives (message, event, opts)
   """
@@ -31,6 +27,10 @@ defmodule Hibiki.Handler do
       {_, text} = text |> String.split_at(1)
       handle_text_message(text, event, opts)
     end
+  end
+
+  def handle_message(_, _, _) do
+    {:error, "unimplemented handle message"}
   end
 
   def handle_text_message(
