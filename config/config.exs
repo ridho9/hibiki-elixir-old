@@ -24,7 +24,11 @@ config :hibiki, Hibiki.Repo,
   password: "pass",
   hostname: "localhost"
 
-config :logger, :console, metadata: [:token]
+config :logger, :console,
+  metadata: [:token],
+  compile_time_purge_matching: [
+    [level_lower_than: :warn]
+  ]
 
 #
 # and access this configuration in your application as:
