@@ -15,6 +15,10 @@ defmodule Hibiki.Handler do
     handle_message(message, event, opts)
   end
 
+  def handle(_, _) do
+    {:error, "unimplemented"}
+  end
+
   @doc """
   Handle message, receives (message, event, opts)
   """
