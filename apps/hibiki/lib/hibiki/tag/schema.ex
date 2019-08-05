@@ -1,7 +1,7 @@
 defmodule Hibiki.Tag.Schema do
   use Ecto.Schema
 
-  schema "tag" do
+  schema "tags" do
     field(:name, :string)
     field(:type, :string)
     field(:value, :string)

@@ -11,11 +11,11 @@ defmodule Hibiki.Application do
     children = [
       # Starts a worker by calling: Hibiki.Worker.start_link(arg)
       # {Hibiki.Worker, arg}
+      {Hibiki.Repo, []},
       {Plug.Cowboy,
        scheme: :http,
        plug: Hibiki.Router,
-       options: [ip: Application.get_env(:hibiki, :ip), port: Application.get_env(:hibiki, :port)]},
-      {Hibiki.Repo, []}
+       options: [ip: Application.get_env(:hibiki, :ip), port: Application.get_env(:hibiki, :port)]}
     ]
 
     Logger.info("Starting application...")
