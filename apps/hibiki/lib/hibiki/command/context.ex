@@ -34,8 +34,8 @@ defmodule Hibiki.Command.Context do
     add_message(ctx, text_messages)
   end
 
-  def add_error(ctx, error) do
-    add_text_message(ctx, "Ugh... #{error}")
+  def add_error(ctx, err) do
+    add_text_message(ctx, "Ugh... #{err}")
   end
 
   def add_image_message(ctx, original_url) do
