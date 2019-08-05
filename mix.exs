@@ -11,8 +11,7 @@ defmodule HibikiElixir.MixProject do
           version: "0.1.0",
           applications: [hibiki: :permanent]
         ]
-      ],
-      aliases: aliases()
+      ]
     ]
   end
 
@@ -23,11 +22,5 @@ defmodule HibikiElixir.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     []
-  end
-
-  defp aliases do
-    [
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
-    ]
   end
 end
