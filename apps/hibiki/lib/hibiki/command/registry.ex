@@ -4,11 +4,13 @@ defmodule Hibiki.Command.Registry do
 
     def all,
       do: [
+        H.Info.Command,
         H.Calc.Command,
         H.Call.Command,
         H.Choose.Command,
         H.Help.Command,
         H.Code.Command,
+        H.Tag.Command,
         H.Ryn.Command
       ]
   end
