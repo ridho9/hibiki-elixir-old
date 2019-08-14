@@ -12,12 +12,14 @@ defmodule Hibiki.Code.Command do
   def private, do: true
 
   def handle(%{"code" => code} = args, ctx) do
+    code = URI.encode_www_form(code)
+
     url =
       "https://opener.now.sh/api/data/#{code}"
       |> String.trim()
       |> URI.encode()
 
-    with {:ok, %HTTPoison.Response{body: body}} <- HTTPoison.get(url),
+    with {:ok, %HTTPoison.Response{body: body}} <- HTTPoison.get(url, follow_redirect: true),
          {:ok, result} <- Jason.decode(body) do
       handle_result(args, result, ctx)
     end
