@@ -68,13 +68,13 @@ defmodule Hibiki.Handler do
     hook_command_start(ctx)
 
     result =
-      case command.handle(args, ctx) do
-        {:error, err} = result ->
+      with {:ok, args, ctx} <- command.pre_handle(args, ctx),
+           result when is_map(result) <- command.handle(args, ctx) do
+        {:ok, result}
+      else
+        {:error, err} ->
           Logger.error(err)
-          result
-
-        result ->
-          {:ok, result}
+          {:error, err}
       end
 
     hook_command_end(ctx)

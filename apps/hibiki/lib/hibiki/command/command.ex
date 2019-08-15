@@ -4,7 +4,10 @@ defmodule Hibiki.Command do
   @callback subcommands() :: [module()]
   @callback options() :: Hibiki.Command.Options.t()
   @callback private() :: bool
-  @callback handle(args :: any, context :: any) :: Hibiki.Command.Context.t() | {:error, any()}
+  @callback handle(args :: any, context :: Hibiki.Command.Context.t()) ::
+              Hibiki.Command.Context.t() | {:error, any()}
+  @callback pre_handle(args :: any, context :: Hibiki.Command.Context.t()) ::
+              {:ok, args :: any, Hibiki.Command.Context.t()} | {:error, any}
 
   defmacro __using__(_opts) do
     quote do
@@ -15,6 +18,9 @@ defmodule Hibiki.Command do
       def subcommands, do: []
       def options, do: %Hibiki.Command.Options{}
       def private, do: false
+      def handle(_, _), do: {:error, "#{__MODULE__} UNIMPLEMENTED!"}
+      def pre_handle(args, ctx), do: {:ok, args, ctx}
+
       defoverridable(Hibiki.Command)
     end
   end
