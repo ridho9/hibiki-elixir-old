@@ -10,7 +10,7 @@ defmodule Hibiki.Command.Registry do
         H.Choose.Command,
         H.Help.Command,
         H.Code.Command,
-        H.Tag.Command,
+        # H.Tag.Command,
         H.Ryn.Command
       ]
   end
