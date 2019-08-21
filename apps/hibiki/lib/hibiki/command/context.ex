@@ -19,9 +19,7 @@ defmodule Hibiki.Command.Context do
 
   alias __MODULE__
 
-  def start_now(ctx) do
-    %{ctx | start_time: DateTime.utc_now()}
-  end
+  def start_now(ctx), do: %{ctx | start_time: DateTime.utc_now()}
 
   def set_event(ctx, event), do: %{ctx | event: event}
 
@@ -64,14 +62,13 @@ defmodule Hibiki.Command.Context do
     %{ctx | replied: true}
   end
 
-  def source_user_id(%Context{event: %{"source" => %{"user_id" => user_id}}}) do
-    user_id
-  end
+  @spec source_user_id(Hibiki.Command.Context.t()) :: binary
+  def source_user_id(%Context{event: %{"source" => %{"user_id" => user_id}}}), do: user_id
 
-  def source_scope_type(%Context{event: %{"source" => %{"type" => type}}}) do
-    type
-  end
+  @spec source_scope_type(Hibiki.Command.Context.t()) :: binary
+  def source_scope_type(%Context{event: %{"source" => %{"type" => type}}}), do: type
 
+  @spec source_scope_id(Hibiki.Command.Context.t()) :: binary
   def source_scope_id(%Context{event: %{"source" => source}}) do
     do_source_scope_id(source)
   end
