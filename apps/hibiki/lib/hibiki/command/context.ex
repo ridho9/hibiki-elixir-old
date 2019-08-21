@@ -63,4 +63,20 @@ defmodule Hibiki.Command.Context do
 
     %{ctx | replied: true}
   end
+
+  def source_user_id(%Context{event: %{"source" => %{"user_id" => user_id}}}) do
+    user_id
+  end
+
+  def source_scope_type(%Context{event: %{"source" => %{"type" => type}}}) do
+    type
+  end
+
+  def source_scope_id(%Context{event: %{"source" => source}}) do
+    do_source_scope_id(source)
+  end
+
+  defp do_source_scope_id(%{"type" => "user", "user_id" => user_id}), do: user_id
+  defp do_source_scope_id(%{"type" => "group", "group_id" => group_id}), do: group_id
+  defp do_source_scope_id(%{"type" => "room", "room_id" => room_id}), do: room_id
 end
