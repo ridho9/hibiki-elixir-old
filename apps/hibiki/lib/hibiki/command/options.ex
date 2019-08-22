@@ -9,7 +9,6 @@ defmodule Hibiki.Command.Options do
           allow_empty_last: bool
         }
 
-  import Hibiki.Parser, only: [next_token: 1]
   alias Hibiki.Command.Options
 
   def generate_usage_line(%Options{
@@ -90,14 +89,33 @@ defmodule Hibiki.Command.Options do
     |> String.trim()
   end
 
-  def fill_defaults(%Options{flag: flag, optional: optional}) do
-    default_flag =
-      flag
-      |> Enum.reduce(%{}, fn {key, _}, acc -> Map.put(acc, key, false) end)
+  def add_named(%Options{named: named, named_key: named_key} = opt, name, desc \\ "") do
+    named = named |> Map.put(name, desc)
 
-    optional
-    |> Enum.reduce(default_flag, fn {key, _}, acc -> Map.put(acc, key, nil) end)
+    named_key =
+      named_key
+      |> Enum.filter(fn x -> x != name end)
+      |> (fn l -> l ++ [name] end).()
+
+    opt
+    |> Map.put(:named, named)
+    |> Map.put(:named_key, named_key)
   end
+
+  def add_flag(%Options{flag: flag} = opt, name, desc \\ "") do
+    flag = Map.put(flag, name, desc)
+    opt |> Map.put(:flag, flag)
+  end
+
+  def add_optional(%Options{optional: optional} = opt, name, desc \\ "") do
+    optional = Map.put(optional, name, desc)
+    opt |> Map.put(:optional, optional)
+  end
+end
+
+defmodule Hibiki.Command.Options.Parser do
+  import Hibiki.Parser, only: [next_token: 1]
+  alias Hibiki.Command.Options
 
   def parse(options, text), do: parse(options, text, fill_defaults(options))
 
@@ -159,27 +177,13 @@ defmodule Hibiki.Command.Options do
     end
   end
 
-  def add_named(%Options{named: named, named_key: named_key} = opt, name, desc \\ "") do
-    named = named |> Map.put(name, desc)
+  defp fill_defaults(%Options{flag: flag, optional: optional}) do
+    default_flag =
+      flag
+      |> Enum.reduce(%{}, fn {key, _}, acc -> Map.put(acc, key, false) end)
 
-    named_key =
-      named_key
-      |> Enum.filter(fn x -> x != name end)
-      |> (fn l -> l ++ [name] end).()
-
-    opt
-    |> Map.put(:named, named)
-    |> Map.put(:named_key, named_key)
-  end
-
-  def add_flag(%Options{flag: flag} = opt, name, desc \\ "") do
-    flag = Map.put(flag, name, desc)
-    opt |> Map.put(:flag, flag)
-  end
-
-  def add_optional(%Options{optional: optional} = opt, name, desc \\ "") do
-    optional = Map.put(optional, name, desc)
-    opt |> Map.put(:optional, optional)
+    optional
+    |> Enum.reduce(default_flag, fn {key, _}, acc -> Map.put(acc, key, nil) end)
   end
 
   defp put_result(map, key, value) do

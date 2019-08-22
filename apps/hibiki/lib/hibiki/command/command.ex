@@ -7,7 +7,7 @@ defmodule Hibiki.Command do
   @callback handle(args :: any, context :: Hibiki.Command.Context.t()) ::
               Hibiki.Command.Context.t() | {:error, any()}
   @callback pre_handle(args :: any, context :: Hibiki.Command.Context.t()) ::
-              {:ok, args :: any, Hibiki.Command.Context.t()} | {:error, any}
+              {:ok, args :: any, ctx :: Hibiki.Command.Context.t()} | {:error, any}
 
   defmacro __using__(_opts) do
     quote do

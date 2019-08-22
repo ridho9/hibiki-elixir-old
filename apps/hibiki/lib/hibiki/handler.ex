@@ -44,7 +44,7 @@ defmodule Hibiki.Handler do
       ) do
     with {:ok, command, args, _} <-
            Registry.command_from_text(Registry.Default.all(), text),
-         {:ok, args} <- Options.parse(command.options, args),
+         {:ok, args} <- Options.Parser.parse(command.options, args),
          ctx = %Context{
            client: client,
            event: event,
