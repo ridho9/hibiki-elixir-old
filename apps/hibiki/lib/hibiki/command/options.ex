@@ -40,8 +40,14 @@ defmodule Hibiki.Command.Options do
         named_key: named_key,
         named: named
       }) do
+    map_filter_empty_key = fn x ->
+      x |> Enum.filter(fn {_, v} -> v != "" end)
+    end
+
+    flag = map_filter_empty_key.(flag)
+
     flag_desc =
-      if map_size(flag) > 0 do
+      if length(flag) > 0 do
         flag
         |> Enum.filter(fn {_, desc} -> String.trim(desc) != "" end)
         |> Enum.map(fn {opt, desc} -> " -#{opt} : #{desc}" end)
@@ -51,8 +57,10 @@ defmodule Hibiki.Command.Options do
         ""
       end
 
+    optional = map_filter_empty_key.(optional)
+
     optional_desc =
-      if map_size(optional) > 0 do
+      if length(optional) > 0 do
         optional
         |> Enum.filter(fn {_, desc} -> String.trim(desc) != "" end)
         |> Enum.map(fn {opt, desc} -> " --#{opt} <>: #{desc}" end)
