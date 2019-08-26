@@ -47,14 +47,17 @@ defmodule Hibiki.Help.Command do
     query = String.trim(query)
 
     case Registry.command_from_text(Registry.Default.all(), query) do
+      {:error, _} ->
+        {:error, "Can't find help for '#{query}'"}
+
       {:ok, command, _, parent} ->
         commands =
           (parent ++ [command])
           |> Enum.map(fn x -> x.name end)
           |> Enum.join(" ")
 
-        usage_line = Options.generate_usage_line(command.options)
-        usage_desc = Options.generate_usage_description(command.options)
+        usage_line = Options.Describe.generate_usage_line(command.options)
+        usage_desc = Options.Describe.generate_usage_description(command.options)
 
         help_string =
           [
@@ -67,9 +70,6 @@ defmodule Hibiki.Help.Command do
           |> String.trim()
 
         ctx |> add_text_message(help_string) |> send_reply()
-
-      {:error, _} ->
-        {:error, "Can't find help for '#{query}'"}
     end
   end
 end

@@ -1,6 +1,5 @@
 defmodule Hibiki.Parser do
-  def next_token(nil), do: {:error, "empty input"}
-  def next_token(""), do: {:error, "empty input"}
+  def next_token(input) when input == nil or input == "", do: {:error, "empty input"}
 
   def next_token(input) do
     input = String.trim_leading(input)

@@ -61,19 +61,23 @@ defmodule Hibiki.Command.Context do
 
     %{ctx | replied: true}
   end
+end
 
-  @spec source_user_id(Hibiki.Command.Context.t()) :: binary
-  def source_user_id(%Context{event: %{"source" => %{"user_id" => user_id}}}), do: user_id
+defmodule Hibiki.Command.Context.Source do
+  alias Hibiki.Command.Context
 
-  @spec source_scope_type(Hibiki.Command.Context.t()) :: binary
-  def source_scope_type(%Context{event: %{"source" => %{"type" => type}}}), do: type
+  @spec user_id(Hibiki.Command.Context.t()) :: binary
+  def user_id(%Context{event: %{"source" => %{"user_id" => user_id}}}), do: user_id
 
-  @spec source_scope_id(Hibiki.Command.Context.t()) :: binary
-  def source_scope_id(%Context{event: %{"source" => source}}) do
-    do_source_scope_id(source)
+  @spec scope_type(Hibiki.Command.Context.t()) :: binary
+  def scope_type(%Context{event: %{"source" => %{"type" => type}}}), do: type
+
+  @spec scope_id(Hibiki.Command.Context.t()) :: binary
+  def scope_id(%Context{event: %{"source" => source}}) do
+    do_scope_id(source)
   end
 
-  defp do_source_scope_id(%{"type" => "user", "user_id" => user_id}), do: user_id
-  defp do_source_scope_id(%{"type" => "group", "group_id" => group_id}), do: group_id
-  defp do_source_scope_id(%{"type" => "room", "room_id" => room_id}), do: room_id
+  defp do_scope_id(%{"type" => "user", "user_id" => user_id}), do: user_id
+  defp do_scope_id(%{"type" => "group", "group_id" => group_id}), do: group_id
+  defp do_scope_id(%{"type" => "room", "room_id" => room_id}), do: room_id
 end

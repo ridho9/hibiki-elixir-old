@@ -8,10 +8,13 @@ defmodule Hibiki.Choose.Command do
     do: %Options{} |> Options.add_named("choice", "Choices to select separated by space")
 
   def handle(%{"choice" => choice}, ctx) do
-    choice = Hibiki.Parser.tokenize(choice)
+    result =
+      choice
+      |> Hibiki.Parser.tokenize()
+      |> Enum.random()
 
-    result = Enum.random(choice)
-
-    ctx |> add_text_message("I choose #{result}") |> send_reply()
+    ctx
+    |> add_text_message("I choose #{result}")
+    |> send_reply()
   end
 end

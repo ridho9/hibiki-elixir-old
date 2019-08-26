@@ -10,7 +10,7 @@ defmodule Hibiki.Ryn.Command do
     answer = Enum.random(["yes", "no", "maybe"])
 
     ctx
-    |> add_text_message("#{question} : #{answer}")
+    |> add_text_message("#{question}\n   #{answer}")
     |> send_reply()
   end
 end

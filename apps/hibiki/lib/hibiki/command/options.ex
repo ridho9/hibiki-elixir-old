@@ -11,6 +11,33 @@ defmodule Hibiki.Command.Options do
 
   alias Hibiki.Command.Options
 
+  def add_named(%Options{named: named, named_key: named_key} = opt, name, desc \\ "") do
+    named = named |> Map.put(name, desc)
+
+    named_key =
+      named_key
+      |> Enum.filter(fn x -> x != name end)
+      |> (fn l -> l ++ [name] end).()
+
+    opt
+    |> Map.put(:named, named)
+    |> Map.put(:named_key, named_key)
+  end
+
+  def add_flag(%Options{flag: flag} = opt, name, desc \\ "") do
+    flag = Map.put(flag, name, desc)
+    Map.put(opt, :flag, flag)
+  end
+
+  def add_optional(%Options{optional: optional} = opt, name, desc \\ "") do
+    optional = Map.put(optional, name, desc)
+    Map.put(opt, :optional, optional)
+  end
+end
+
+defmodule Hibiki.Command.Options.Describe do
+  alias Hibiki.Command.Options
+
   def generate_usage_line(%Options{
         flag: flag,
         optional: optional,
@@ -88,29 +115,6 @@ defmodule Hibiki.Command.Options do
     |> Enum.join("\n\n")
     |> String.trim()
   end
-
-  def add_named(%Options{named: named, named_key: named_key} = opt, name, desc \\ "") do
-    named = named |> Map.put(name, desc)
-
-    named_key =
-      named_key
-      |> Enum.filter(fn x -> x != name end)
-      |> (fn l -> l ++ [name] end).()
-
-    opt
-    |> Map.put(:named, named)
-    |> Map.put(:named_key, named_key)
-  end
-
-  def add_flag(%Options{flag: flag} = opt, name, desc \\ "") do
-    flag = Map.put(flag, name, desc)
-    opt |> Map.put(:flag, flag)
-  end
-
-  def add_optional(%Options{optional: optional} = opt, name, desc \\ "") do
-    optional = Map.put(optional, name, desc)
-    opt |> Map.put(:optional, optional)
-  end
 end
 
 defmodule Hibiki.Command.Options.Parser do
@@ -122,23 +126,28 @@ defmodule Hibiki.Command.Options.Parser do
   def parse(%Options{named_key: []}, "", r), do: {:ok, r}
   def parse(%Options{named_key: []}, nil, r), do: {:ok, r}
 
-  def parse(%Options{named_key: [named_key], allow_empty_last: allow_empty}, input, r)
+  def parse(%Options{named_key: [named_key], allow_empty_last: true}, input, r)
       when input == "" or input == nil do
-    if allow_empty do
-      {:ok, Map.put(r, named_key, input)}
-    else
-      {:error, "expected argument '#{named_key}'"}
-    end
+    {:ok, Map.put(r, named_key, input)}
+  end
+
+  def parse(%Options{named_key: [named_key], allow_empty_last: false}, input, _)
+      when input == "" or input == nil do
+    {:error, "expected argument '#{named_key}'"}
   end
 
   def parse(options, input, result) do
     # have named key and input not empty
     input = String.trim(input)
 
-    {:ok, token, rest} = next_token(input)
+    {:ok, token, rest} =
+      input
+      |> String.trim()
+      |> next_token()
 
     cond do
       String.starts_with?(input, "--") ->
+        # Handle optional
         head = String.slice(token, 2..-1)
 
         case next_token(rest) do
@@ -151,6 +160,7 @@ defmodule Hibiki.Command.Options.Parser do
         end
 
       String.starts_with?(input, "-") ->
+        # Handle flag
         head = String.slice(token, 1..-1)
 
         result =
@@ -160,18 +170,17 @@ defmodule Hibiki.Command.Options.Parser do
 
         parse(options, rest, result)
 
-      # handle no named key
       options.named_key == [] ->
+        # handle no named key
         {:ok, Map.put(result, "rest", input)}
 
       length(options.named_key) == 1 ->
         {:ok, Map.put(result, options.named_key |> hd, input)}
 
-      # handle if have named key
       true ->
-        value = token
+        # handle if have named key
         [key | named_key] = options.named_key
-        result = put_result(result, key, value)
+        result = put_result(result, key, token)
         options = %{options | named_key: named_key}
         parse(options, rest, result)
     end

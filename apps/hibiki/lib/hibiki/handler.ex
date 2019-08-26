@@ -75,6 +75,9 @@ defmodule Hibiki.Handler do
         {:error, err} ->
           Logger.error(err)
           {:error, err}
+
+        {:stop, _} ->
+          {:ok, "prehandle stop"}
       end
 
     hook_command_end(ctx)
@@ -95,5 +98,7 @@ defmodule Hibiki.Handler do
 
     Logger.debug("end handle #{ctx.command} in #{time_diff}ms", time: time_diff)
     Logger.metadata(token: nil, args: nil, ctx: nil, command: nil)
+
+    ctx
   end
 end
