@@ -20,4 +20,15 @@ defmodule Hibiki.Tag.Schema do
     |> validate_inclusion(:type, ["image", "text"])
     |> unique_constraint(:name, name: :tags_scope_id_name_index)
   end
+
+  def format_error(changeset) do
+    changeset
+    |> Ecto.Changeset.traverse_errors(fn {msg, opts} ->
+      Enum.reduce(opts, msg, fn {key, value}, acc ->
+        String.replace(acc, "%{#{key}}", to_string(value))
+      end)
+    end)
+    |> Enum.map(fn {k, v} -> "#{k} #{v}" end)
+    |> Enum.join(", ")
+  end
 end
