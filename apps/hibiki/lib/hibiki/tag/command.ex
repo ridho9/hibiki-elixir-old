@@ -53,8 +53,6 @@ defmodule Hibiki.Tag.Command.Create do
   def pre_handle(args, ctx) do
     with {:ok, args, ctx} <- Hibiki.Tag.Command.pre_handle(args, ctx) do
       # check for user to be registered
-      IO.inspect(args)
-
       if args["!"] do
         if Hibiki.Entity.admin?(args["user"]) do
           args = %{args | "scope" => Hibiki.Entity.global()}
