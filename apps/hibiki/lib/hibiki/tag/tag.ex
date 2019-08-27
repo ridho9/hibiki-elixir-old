@@ -1,5 +1,4 @@
 defmodule Hibiki.Tag do
-  alias Hibiki.Tag.Schema
   import Ecto.Query
 
   def create(name, type, value, creator, scope) do
@@ -22,5 +21,13 @@ defmodule Hibiki.Tag do
       where: t.scope_id == ^scope.id
     )
     |> Hibiki.Repo.all()
+  end
+
+  def by_name(name, scope) do
+    from(t in Hibiki.Tag.Schema,
+      where: t.scope_id == ^scope.id,
+      where: t.name == ^name
+    )
+    |> Hibiki.Repo.one()
   end
 end

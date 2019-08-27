@@ -1,14 +1,24 @@
 defmodule Hibiki.Tag.Command do
   use Hibiki.Command
+  import Hibiki.Command.Context.Source
+
   alias Hibiki.Entity
   alias Hibiki.Tag
-  import Hibiki.Command.Context.Source
+  alias Hibiki.Command.Options
 
   def name, do: "tag"
   def description, do: "Get tag <name>"
-  def options, do: %Options{} |> Options.add_named("name", "tag name")
+
+  def options,
+    do:
+      %Options{}
+      |> Options.add_named("name", "tag name")
 
   def pre_handle(args, ctx) do
+    pre_handle_load_scope(args, ctx)
+  end
+
+  def pre_handle_load_scope(args, ctx) do
     user_id = user_id(ctx)
     user = Entity.create_or_get(user_id, "user")
 
@@ -24,9 +34,33 @@ defmodule Hibiki.Tag.Command do
     {:ok, args, ctx}
   end
 
-  def handle(%{"name" => name} = args, ctx) do
-    IO.inspect(args)
-    ctx
+  def pre_handle_global_scope(args, ctx) do
+    if Hibiki.Entity.admin?(args["user"]) do
+      args = Map.put(args, "scope", Hibiki.Entity.global())
+      {:ok, args, ctx}
+    else
+      ctx =
+        ctx
+        |> add_error("You are not an admin")
+        |> send_reply()
+
+      {:stop, ctx}
+    end
+  end
+
+  def handle(%{"name" => name, "scope" => scope, "user" => user}, ctx) do
+    scopes = [scope, user, Hibiki.Entity.global()]
+
+    tag =
+      scopes
+      |> Enum.reduce(nil, fn sc, acc ->
+        acc || Hibiki.Tag.by_name(name, sc)
+      end)
+
+    case tag do
+      nil -> handle_tag_nil(name, scope, ctx)
+      tag -> handle_tag(tag, tag.type, ctx)
+    end
   end
 
   def subcommands,
@@ -34,6 +68,24 @@ defmodule Hibiki.Tag.Command do
       Tag.Command.Create,
       Tag.Command.List
     ]
+
+  defp handle_tag(tag, "image", ctx) do
+    ctx
+    |> add_image_message(tag.value)
+    |> send_reply()
+  end
+
+  defp handle_tag(tag, "text", ctx) do
+    ctx
+    |> add_text_message(tag.value)
+    |> send_reply()
+  end
+
+  defp handle_tag_nil(name, scope, ctx) do
+    ctx
+    |> add_error("Tag '#{name}' not found in this #{scope.type}")
+    |> send_reply()
+  end
 end
 
 defmodule Hibiki.Tag.Command.Create do
@@ -48,27 +100,27 @@ defmodule Hibiki.Tag.Command.Create do
       %Options{}
       |> Options.add_named("name", "tag name")
       |> Options.add_named("value", "tag value")
+      |> Options.add_flag("t", "create text tag")
       |> Options.add_flag("!")
 
   def pre_handle(args, ctx) do
-    with {:ok, args, ctx} <- Hibiki.Tag.Command.pre_handle(args, ctx) do
-      # check for user to be registered
+    with {:ok, args, ctx} <- Hibiki.Tag.Command.pre_handle_load_scope(args, ctx) do
+      # TODO: check for user to be registered
       if args["!"] do
-        if Hibiki.Entity.admin?(args["user"]) do
-          args = %{args | "scope" => Hibiki.Entity.global()}
-          {:ok, args, ctx}
-        else
-          ctx = ctx |> add_error("You are not an admin") |> send_reply()
-          {:stop, ctx}
-        end
+        Hibiki.Tag.Command.pre_handle_global_scope(args, ctx)
       else
         {:ok, args, ctx}
       end
     end
   end
 
-  def handle(%{"name" => name, "value" => value, "user" => user, "scope" => scope}, ctx) do
-    case Hibiki.Tag.create(name, "image", value, user, scope) do
+  def handle(
+        %{"name" => name, "value" => value, "user" => user, "scope" => scope, "t" => text},
+        ctx
+      ) do
+    tag_type = if text, do: "text", else: "image"
+
+    case Hibiki.Tag.create(name, tag_type, value, user, scope) do
       {:ok, tag} ->
         ctx
         |> add_text_message("Successfully created tag '#{tag.name}' in this #{scope.type}")
@@ -91,7 +143,7 @@ defmodule Hibiki.Tag.Command.List do
   def description, do: "Lists available tags"
 
   def pre_handle(args, ctx) do
-    Hibiki.Tag.Command.pre_handle(args, ctx)
+    Hibiki.Tag.Command.pre_handle_load_scope(args, ctx)
   end
 
   def handle(%{"user" => user, "scope" => scope}, ctx) do
