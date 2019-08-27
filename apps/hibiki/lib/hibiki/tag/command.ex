@@ -165,7 +165,7 @@ defmodule Hibiki.Tag.Command.List do
     result =
       result
       |> Enum.filter(fn x -> x != nil or x != "" end)
-      |> Enum.join("\n")
+      |> Enum.join("\n\n")
 
     ctx
     |> add_text_message(result)
@@ -176,6 +176,7 @@ defmodule Hibiki.Tag.Command.List do
     scope
     |> Hibiki.Tag.get_by_scope()
     |> Enum.map(fn x -> x.name end)
+    |> Enum.sort()
     |> Enum.join(", ")
     |> case do
       "" -> "no tag found"
