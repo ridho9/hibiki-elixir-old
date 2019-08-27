@@ -50,6 +50,7 @@ defmodule Hibiki.Tag.Command do
 
   def handle(%{"name" => name, "scope" => scope, "user" => user}, ctx) do
     scopes = [scope, user, Hibiki.Entity.global()]
+    name = String.downcase(name)
 
     tag =
       scopes
