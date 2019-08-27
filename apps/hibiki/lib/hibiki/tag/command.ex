@@ -92,6 +92,7 @@ end
 defmodule Hibiki.Tag.Command.Create do
   use Hibiki.Command
   alias Hibiki.Command.Options
+  alias Hibiki.Command.Context.Source
 
   def name, do: "create"
   def description, do: "Creates a new tag"
@@ -105,13 +106,26 @@ defmodule Hibiki.Tag.Command.Create do
       |> Options.add_flag("!")
 
   def pre_handle(args, ctx) do
-    with {:ok, args, ctx} <- Hibiki.Tag.Command.pre_handle_load_scope(args, ctx) do
-      # TODO: check for user to be registered
-      if args["!"] do
-        Hibiki.Tag.Command.pre_handle_global_scope(args, ctx)
-      else
-        {:ok, args, ctx}
-      end
+    user_id = Source.user_id(ctx)
+
+    case LineSDK.Client.get_profile(ctx.client, user_id) do
+      {:ok, _} ->
+        with {:ok, args, ctx} = res <- Hibiki.Tag.Command.pre_handle_load_scope(args, ctx) do
+          # TODO: check for user to be registered
+          if args["!"] do
+            Hibiki.Tag.Command.pre_handle_global_scope(args, ctx)
+          else
+            res
+          end
+        end
+
+      {:error, _} ->
+        ctx =
+          ctx
+          |> add_error("Please add Hibiki first")
+          |> send_reply()
+
+        {:stop, ctx}
     end
   end
 
