@@ -16,6 +16,21 @@ defmodule LineSDK.Client do
     post(client, "/bot/message/reply", body)
   end
 
+  @spec get_profile(%LineSDK.Client{}, binary) :: {:error, any} | {:ok, any}
+  def get_profile(client, user_id) do
+    user_id = URI.encode(user_id)
+
+    with {:ok, %HTTPoison.Response{body: body, status_code: status_code}} <-
+           get(client, "/bot/profile/#{user_id}"),
+         {:ok, body} <- Jason.decode(body) do
+      case status_code do
+        200 -> {:ok, body}
+        404 -> {:error, body["message"]}
+        _ -> {:error, body}
+      end
+    end
+  end
+
   def get(client, url) do
     headers = [
       {"Authorization", "Bearer #{client.channel_access_token}"}
