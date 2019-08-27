@@ -7,7 +7,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = ""
     expected = {:ok, %{}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "return empty map for nil string" do
@@ -15,7 +15,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = nil
     expected = {:ok, %{}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "1 options" do
@@ -23,7 +23,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = "--age 123"
     expected = {:ok, %{"age" => 123}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "1 options rest" do
@@ -31,7 +31,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = "--age 123 rest"
     expected = {:ok, %{"age" => 123, "rest" => "rest"}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "1 options error" do
@@ -39,7 +39,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = "--age"
     expected = {:error, "expected value for option 'age'"}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "no named" do
@@ -47,7 +47,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = "rest"
     expected = {:ok, %{"rest" => "rest"}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "flag" do
@@ -55,7 +55,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = "-abc rest"
     expected = {:ok, %{"a" => true, "b" => true, "c" => true, "rest" => "rest"}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "named" do
@@ -63,7 +63,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = "abc 123"
     expected = {:ok, %{"name" => "abc 123"}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "named empty" do
@@ -71,7 +71,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = ""
     expected = {:error, "expected argument 'name'"}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "named allow empty last" do
@@ -79,7 +79,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = ""
     expected = {:ok, %{"name" => ""}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "named with quote" do
@@ -87,7 +87,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = ~s("qwe asd" 123)
     expected = {:ok, %{"name" => input_text}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "two named" do
@@ -95,7 +95,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = ~s(aaa bbb ccc)
     expected = {:ok, %{"a" => "aaa", "b" => "bbb ccc"}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "two named empty last" do
@@ -103,7 +103,7 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = ~s(aaa)
     expected = {:error, "expected argument 'b'"}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 
   test "two named empty last allow" do
@@ -113,6 +113,6 @@ defmodule Hibiki.Command.OptionsTest do
     input_text = ~s(aaa)
     expected = {:ok, %{"a" => "aaa", "b" => ""}}
 
-    assert Options.parse(input_options, input_text) == expected
+    assert Options.Parser.parse(input_options, input_text) == expected
   end
 end

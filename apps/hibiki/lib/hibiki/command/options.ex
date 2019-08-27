@@ -175,7 +175,11 @@ defmodule Hibiki.Command.Options.Parser do
         {:ok, Map.put(result, "rest", input)}
 
       length(options.named_key) == 1 ->
-        {:ok, Map.put(result, options.named_key |> hd, input)}
+        key = hd(options.named_key)
+
+        result = Map.put(result, key, input)
+
+        {:ok, result}
 
       true ->
         # handle if have named key
