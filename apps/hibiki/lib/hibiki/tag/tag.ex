@@ -2,8 +2,6 @@ defmodule Hibiki.Tag do
   import Ecto.Query
 
   def create(name, type, value, creator, scope) do
-    name = String.downcase(name)
-
     %Hibiki.Tag.Schema{creator: creator, scope: scope}
     |> Hibiki.Tag.Schema.changeset(%{name: name, type: type, value: value})
     |> Hibiki.Repo.insert()

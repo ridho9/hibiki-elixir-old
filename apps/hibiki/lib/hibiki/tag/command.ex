@@ -119,6 +119,7 @@ defmodule Hibiki.Tag.Command.Create do
         ctx
       ) do
     tag_type = if text, do: "text", else: "image"
+    name = String.downcase(name)
 
     case Hibiki.Tag.create(name, tag_type, value, user, scope) do
       {:ok, tag} ->
