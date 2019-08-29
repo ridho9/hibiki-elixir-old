@@ -12,6 +12,7 @@ defmodule Hibiki.Application do
       # Starts a worker by calling: Hibiki.Worker.start_link(arg)
       # {Hibiki.Worker, arg}
       {Hibiki.Repo, []},
+      {Hibiki.Entity.Data, name: Hibiki.Entity.Data},
       {Plug.Cowboy,
        scheme: :http,
        plug: Hibiki.Router,

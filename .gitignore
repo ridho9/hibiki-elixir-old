@@ -26,3 +26,4 @@ config/dev.exs
 config/prod.exs
 
 .envrc
+entity_data_dets
