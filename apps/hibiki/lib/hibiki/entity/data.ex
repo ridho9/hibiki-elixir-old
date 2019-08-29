@@ -10,7 +10,7 @@ defmodule Hibiki.Entity.Data do
 
   @spec set(struct, term, term) :: :ok
   def set(entity, key, value) do
-    GenServer.cast(__MODULE__, {:set, {entity, key, value}})
+    GenServer.call(__MODULE__, {:set, {entity, key, value}})
   end
 
   @spec get(struct, term) :: any
@@ -28,13 +28,12 @@ defmodule Hibiki.Entity.Data do
     {:ok, {table}}
   end
 
-  def handle_cast({:set, {entity, key, value}}, {table}) do
+  def handle_call({:set, {entity, key, value}}, _from, {table}) do
     dets_key = {entity.line_id, key}
     dets_value = value
 
-    :dets.insert(table, {dets_key, dets_value})
-
-    {:noreply, {table}}
+    res = :dets.insert(table, {dets_key, dets_value})
+    {:reply, res, {table}}
   end
 
   def handle_call({:get, {entity, key}}, _from, {table}) do
