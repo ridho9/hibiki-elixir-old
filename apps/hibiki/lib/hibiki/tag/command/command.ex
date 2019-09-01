@@ -67,16 +67,7 @@ defmodule Hibiki.Tag.Command do
   end
 
   def handle(%{"name" => name, "scope" => scope, "user" => user}, ctx) do
-    scopes = [scope, user, Hibiki.Entity.global()]
-    name = String.downcase(name)
-
-    tag =
-      scopes
-      |> Enum.reduce(nil, fn sc, acc ->
-        acc || Hibiki.Tag.by_name(name, sc)
-      end)
-
-    case tag do
+    case Tag.get_from_tiered_scope(name, scope, user) do
       nil -> handle_tag_nil(name, scope, ctx)
       tag -> handle_tag(tag, tag.type, ctx)
     end
@@ -86,7 +77,8 @@ defmodule Hibiki.Tag.Command do
     do: [
       Tag.Command.Create,
       Tag.Command.List,
-      Tag.Command.Delete
+      Tag.Command.Delete,
+      Tag.Command.Info
     ]
 
   defp handle_tag(tag, "image", ctx) do
