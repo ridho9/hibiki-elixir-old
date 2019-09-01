@@ -33,12 +33,15 @@ defmodule Hibiki.Entity do
 
   @spec get(String.t()) :: t | nil
   def get(line_id) do
-    Schema
+    Hibiki.Entity
     |> Repo.get_by(line_id: line_id)
   end
 
   @spec create_or_get(String.t(), String.t()) :: t
   def create_or_get(line_id, type) do
+    IO.inspect(line_id)
+    IO.inspect(type)
+
     case get(line_id) do
       nil ->
         {:ok, entity} = create(line_id, type)
