@@ -63,12 +63,22 @@ defmodule Hibiki.Help.Command do
 
         help_string =
           [
-            "Usage: !#{commands} #{usage_line}\n",
-            "#{command.description()}\n",
-            usage_desc
+            "Usage: !#{commands} #{usage_line}",
+            "#{command.description()}",
+            usage_desc,
+            if length(command.subcommands) > 0 do
+              subcommand_names =
+                command.subcommands
+                |> Enum.map(fn x -> x.name end)
+                |> Enum.sort()
+                |> Enum.join(", ")
+
+              "Subcommands: #{subcommand_names}\nUse '!help #{commands} <subcommand>' for more info"
+            end
           ]
+          |> Enum.filter(fn x -> x != nil end)
           |> Enum.filter(fn x -> String.trim(x) != "" end)
-          |> Enum.join("\n")
+          |> Enum.join("\n\n")
           |> String.trim()
 
         ctx |> add_text_message(help_string) |> send_reply()
