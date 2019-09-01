@@ -8,12 +8,12 @@ defmodule Hibiki.Entity.Data do
     GenServer.start_link(__MODULE__, [], opts)
   end
 
-  @spec set(struct, term, term) :: :ok
+  @spec set(struct, any, any) :: :ok | {:error, any}
   def set(entity, key, value) do
     GenServer.call(__MODULE__, {:set, {entity, key, value}})
   end
 
-  @spec get(struct, term) :: any
+  @spec get(struct, any) :: any
   def get(entity, key) do
     GenServer.call(__MODULE__, {:get, {entity, key}})
   end
