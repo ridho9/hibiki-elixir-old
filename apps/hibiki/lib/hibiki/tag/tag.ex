@@ -91,7 +91,7 @@ defmodule Hibiki.Tag do
   @spec get_from_tiered_scope(String.t(), Hibiki.Entity.t(), Hibiki.Entity.t()) ::
           Hibiki.Tag.t() | nil
   def get_from_tiered_scope(name, scope, user) do
-    scopes = [scope, user, Hibiki.Entity.global()]
+    scopes = [user, scope, Hibiki.Entity.global()]
     name = String.downcase(name)
 
     scopes
