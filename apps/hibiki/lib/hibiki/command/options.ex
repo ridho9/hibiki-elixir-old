@@ -122,8 +122,6 @@ defmodule Hibiki.Command.Options.Parser do
   alias Hibiki.Command.Options
 
   def parse(options, text) do
-    IO.inspect(text)
-    IO.inspect(options)
     parse(options, text, fill_defaults(options))
   end
 
@@ -141,7 +139,6 @@ defmodule Hibiki.Command.Options.Parser do
   end
 
   def parse(options, input, result) do
-    IO.inspect("options '#{input}' ")
     # have named key and input not empty
     input = String.trim(input)
 
