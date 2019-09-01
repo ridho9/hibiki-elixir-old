@@ -9,18 +9,18 @@ defmodule Hibiki.Tag.Command.List do
   end
 
   def handle(%{"user" => user, "scope" => scope}, ctx) do
-    global_tags = "Global: " <> list_tag_in_scope(Hibiki.Entity.global())
     user_tags = "User: " <> list_tag_in_scope(user)
-
-    result = [user_tags, global_tags]
-
-    result =
-      if scope.type in ["group", "room"] do
-        scope_tags = String.capitalize(scope.type) <> ": " <> list_tag_in_scope(scope)
-        [scope_tags] ++ result
+    global_tags = "Global: " <> list_tag_in_scope(Hibiki.Entity.global())
+    scope_tags = if scope.type in ["group", "room"] do
+        String.capitalize(scope.type) <> ": " <> list_tag_in_scope(scope)
       else
-        result
-      end
+
+    result = [
+      user_tags,
+      scope_tags,
+      global_tags
+    ]
+
 
     result =
       result
