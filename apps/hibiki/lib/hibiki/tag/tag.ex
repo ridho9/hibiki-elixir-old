@@ -26,6 +26,8 @@ defmodule Hibiki.Tag do
     |> cast(params, [:name, :type, :value])
     |> validate_required([:name, :type, :value, :creator, :scope])
     |> validate_inclusion(:type, ["image", "text"])
+    |> validate_length(:name, max: 20)
+    |> validate_length(:value, max: 100)
     |> unique_constraint(:name, name: :tags_scope_id_name_index)
   end
 
