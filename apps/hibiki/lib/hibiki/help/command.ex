@@ -48,7 +48,9 @@ defmodule Hibiki.Help.Command do
 
     case Registry.command_from_text(Registry.Default.all(), query) do
       {:error, _} ->
-        {:error, "Can't find help for '#{query}'"}
+        ctx
+        |> add_error("Can't find help for '#{query}'")
+        |> send_reply()
 
       {:ok, command, _, parent} ->
         commands =
