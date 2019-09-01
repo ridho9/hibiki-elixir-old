@@ -13,6 +13,7 @@ defmodule Hibiki.Application do
       # {Hibiki.Worker, arg}
       {Hibiki.Repo, []},
       {Hibiki.Entity.Data, name: Hibiki.Entity.Data},
+      {Hibiki.Cache, name: Hibiki.Cache},
       {Plug.Cowboy,
        scheme: :http,
        plug: Hibiki.Router,
