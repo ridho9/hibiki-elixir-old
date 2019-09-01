@@ -1,8 +1,31 @@
 defmodule Hibiki.Entity do
-  alias Hibiki.Entity.Schema
+  use Ecto.Schema
+
+  import Ecto.Changeset
   alias Hibiki.Repo
 
-  @type t :: Hibiki.Entity.Schema.t()
+  schema "entities" do
+    field(:line_id, :string)
+    field(:type, :string)
+
+    has_many(:created_tags, Hibiki.Tag, foreign_key: :creator_id)
+    has_many(:scope_tags, Hibiki.Tag, foreign_key: :scope_id)
+  end
+
+  @type t :: %__MODULE__{
+          line_id: String.t(),
+          type: String.t(),
+          created_tags: [Hibiki.Tag.t()],
+          scope_tags: [Hibiki.Tag.t()]
+        }
+
+  def changeset(struct, params) do
+    struct
+    |> cast(params, [:line_id, :type])
+    |> validate_required([:line_id, :type])
+    |> validate_inclusion(:type, ["global", "user", "group", "room"])
+    |> unique_constraint(:line_id, name: :entities_line_id_index)
+  end
 
   def global() do
     get("global")
@@ -32,8 +55,8 @@ defmodule Hibiki.Entity do
   end
 
   def create(line_id, type) do
-    %Schema{}
-    |> Schema.changeset(%{line_id: line_id, type: type})
+    %__MODULE__{}
+    |> changeset(%{line_id: line_id, type: type})
     |> Repo.insert()
   end
 
