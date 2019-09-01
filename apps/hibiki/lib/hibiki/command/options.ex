@@ -121,7 +121,11 @@ defmodule Hibiki.Command.Options.Parser do
   import Hibiki.Parser, only: [next_token: 1]
   alias Hibiki.Command.Options
 
-  def parse(options, text), do: parse(options, text, fill_defaults(options))
+  def parse(options, text) do
+    IO.inspect(text)
+    IO.inspect(options)
+    parse(options, text, fill_defaults(options))
+  end
 
   def parse(%Options{named_key: []}, "", r), do: {:ok, r}
   def parse(%Options{named_key: []}, nil, r), do: {:ok, r}
@@ -131,12 +135,13 @@ defmodule Hibiki.Command.Options.Parser do
     {:ok, Map.put(r, named_key, input)}
   end
 
-  def parse(%Options{named_key: [named_key], allow_empty_last: false}, input, _)
+  def parse(%Options{named_key: [named_key | _], allow_empty_last: false}, input, _)
       when input == "" or input == nil do
     {:error, "expected argument '#{named_key}'"}
   end
 
   def parse(options, input, result) do
+    IO.inspect("options '#{input}' ")
     # have named key and input not empty
     input = String.trim(input)
 
