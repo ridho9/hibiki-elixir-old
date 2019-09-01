@@ -10,6 +10,13 @@ defmodule Hibiki.Entity.Schema do
     has_many(:scope_tags, Hibiki.Tag.Schema, foreign_key: :scope_id)
   end
 
+  @type t :: %__MODULE__{
+          line_id: String.t(),
+          type: String.t(),
+          created_tags: [Hibiki.Tag.t()],
+          scope_tags: [Hibiki.Tag.t()]
+        }
+
   def changeset(struct, params) do
     struct
     |> cast(params, [:line_id, :type])

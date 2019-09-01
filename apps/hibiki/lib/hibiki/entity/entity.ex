@@ -2,17 +2,19 @@ defmodule Hibiki.Entity do
   alias Hibiki.Entity.Schema
   alias Hibiki.Repo
 
+  @type t :: Hibiki.Entity.Schema.t()
+
   def global() do
     get("global")
   end
 
-  @spec get(binary) :: struct | nil
+  @spec get(String.t()) :: t | nil
   def get(line_id) do
     Schema
     |> Repo.get_by(line_id: line_id)
   end
 
-  @spec create_or_get(binary, any) :: struct
+  @spec create_or_get(String.t(), String.t()) :: t
   def create_or_get(line_id, type) do
     case get(line_id) do
       nil ->
@@ -24,7 +26,7 @@ defmodule Hibiki.Entity do
     end
   end
 
-  @spec create(binary, binary | atom) :: {:ok, struct} | {:error, any}
+  @spec create(String.t(), String.t()) :: {:ok, t} | {:error, any}
   def create(line_id, type) when is_atom(type) do
     create(line_id, "#{type}")
   end
@@ -35,7 +37,7 @@ defmodule Hibiki.Entity do
     |> Repo.insert()
   end
 
-  @spec admin?(struct) :: boolean
+  @spec admin?(t) :: boolean
   def admin?(entity) do
     entity.line_id in Application.get_env(:hibiki, :admin_id)
   end

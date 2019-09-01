@@ -13,6 +13,12 @@ defmodule Hibiki.Tag.Schema do
     timestamps()
   end
 
+  @type t :: %__MODULE__{
+          name: String.t(),
+          type: String.t(),
+          value: String.t()
+        }
+
   def changeset(struct, params) do
     struct
     |> cast(params, [:name, :type, :value])
