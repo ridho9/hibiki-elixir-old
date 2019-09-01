@@ -85,7 +85,8 @@ defmodule Hibiki.Tag.Command do
   def subcommands,
     do: [
       Tag.Command.Create,
-      Tag.Command.List
+      Tag.Command.List,
+      Tag.Command.Delete
     ]
 
   defp handle_tag(tag, "image", ctx) do
