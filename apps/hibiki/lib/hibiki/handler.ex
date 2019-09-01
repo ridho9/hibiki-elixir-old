@@ -1,10 +1,4 @@
 defmodule Hibiki.Handler do
-  require Logger
-
-  alias Hibiki.Command.Options
-  alias Hibiki.Command.Context
-  alias Hibiki.Command.Registry
-
   @behaviour LineSDK.Handler
 
   @doc """
@@ -27,17 +21,28 @@ defmodule Hibiki.Handler do
         event,
         opts
       ) do
-    if String.starts_with?(text, "!") do
-      {_, text} = text |> String.split_at(1)
-      handle_text_message(text, event, opts)
+    text
+    |> String.trim()
+    |> String.starts_with?("!")
+    |> if do
+      {_, text} = String.split_at(text, 1)
+      Hibiki.Handler.Message.Text.handle(text, event, opts)
     end
   end
 
   def handle_message(_, _, _) do
     {:error, "unimplemented handle message"}
   end
+end
 
-  def handle_text_message(
+defmodule Hibiki.Handler.Message.Text do
+  require Logger
+
+  alias Hibiki.Command.Options
+  alias Hibiki.Command.Context
+  alias Hibiki.Command.Registry
+
+  def handle(
         text,
         %{"reply_token" => reply_token} = event,
         client: client
@@ -64,8 +69,10 @@ defmodule Hibiki.Handler do
   end
 
   def call_command_handler(command, args, ctx) do
-    ctx = Context.start_now(ctx)
-    hook_command_start(ctx)
+    ctx =
+      ctx
+      |> Context.start_now()
+      |> hook_command_start()
 
     result =
       with {:ok, args, ctx} <- command.pre_handle(args, ctx),

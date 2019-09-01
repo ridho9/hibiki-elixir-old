@@ -9,7 +9,7 @@ defmodule Hibiki.Entity do
   @spec get(binary) :: struct | nil
   def get(line_id) do
     Schema
-    |> Hibiki.Repo.get_by(line_id: line_id)
+    |> Repo.get_by(line_id: line_id)
   end
 
   @spec create_or_get(binary, any) :: struct

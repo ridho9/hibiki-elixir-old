@@ -20,7 +20,10 @@ defmodule Hibiki.Command.Registry do
   def command_from_text(registry, input), do: command_from_text(registry, input, [])
 
   def command_from_text(registry, input, parent) do
-    [head | rest] = input |> String.trim() |> String.split(" ", parts: 2)
+    [head | rest] =
+      input
+      |> String.trim()
+      |> String.split(" ", parts: 2)
 
     case Enum.find(registry, fn x -> x.name() == head end) do
       nil ->
@@ -33,7 +36,9 @@ defmodule Hibiki.Command.Registry do
             [rest] -> String.trim(rest)
           end
 
-        case command_from_text(command.subcommands, rest, parent ++ [command]) do
+        subparent = parent ++ [command]
+
+        case command_from_text(command.subcommands, rest, subparent) do
           {:error, _} -> {:ok, command, rest, parent}
           result -> result
         end
