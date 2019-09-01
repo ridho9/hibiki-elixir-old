@@ -34,7 +34,7 @@ defmodule Hibiki.Tag.Command.Create do
         |> send_reply()
 
       {:error, err} ->
-        err = "Error creating tag '#{name}': " <> Hibiki.Tag.Schema.format_error(err)
+        err = "Error creating tag '#{name}': " <> Hibiki.Tag.format_error(err)
 
         ctx
         |> add_error(err)

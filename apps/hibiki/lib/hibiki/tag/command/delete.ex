@@ -34,7 +34,7 @@ defmodule Hibiki.Tag.Command.Delete do
         |> send_reply()
 
       {:error, changeset} ->
-        err = "Error deleting tag: " <> Tag.Schema.format_error(changeset)
+        err = "Error deleting tag: " <> Tag.format_error(changeset)
 
         ctx
         |> add_error(err)

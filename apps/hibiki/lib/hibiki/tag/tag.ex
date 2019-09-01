@@ -1,13 +1,50 @@
 defmodule Hibiki.Tag do
+  use Ecto.Schema
   import Ecto.Query
 
-  @type t :: Hibiki.Tag.Schema.t()
+  schema "tags" do
+    field(:name, :string)
+    field(:type, :string)
+    field(:value, :string)
+
+    belongs_to(:creator, Hibiki.Entity, foreign_key: :creator_id)
+    belongs_to(:scope, Hibiki.Entity, foreign_key: :scope_id)
+
+    timestamps()
+  end
+
+  @type t :: %__MODULE__{
+          name: String.t(),
+          type: String.t(),
+          value: String.t()
+        }
+
+  def changeset(struct, params) do
+    import Ecto.Changeset
+
+    struct
+    |> cast(params, [:name, :type, :value])
+    |> validate_required([:name, :type, :value, :creator, :scope])
+    |> validate_inclusion(:type, ["image", "text"])
+    |> unique_constraint(:name, name: :tags_scope_id_name_index)
+  end
+
+  def format_error(changeset) do
+    changeset
+    |> Ecto.Changeset.traverse_errors(fn {msg, opts} ->
+      Enum.reduce(opts, msg, fn {key, value}, acc ->
+        String.replace(acc, "%{#{key}}", to_string(value))
+      end)
+    end)
+    |> Enum.map(fn {k, v} -> "#{k} #{v}" end)
+    |> Enum.join(", ")
+  end
 
   @spec create(String.t(), String.t(), String.t(), Hibiki.Entity.t(), Hibiki.Entity.t()) ::
           {:ok, Hibiki.Tag.t()} | {:error, any}
   def create(name, type, value, creator, scope) do
-    %Hibiki.Tag.Schema{creator: creator, scope: scope}
-    |> Hibiki.Tag.Schema.changeset(%{name: name, type: type, value: value})
+    %Hibiki.Tag{creator: creator, scope: scope}
+    |> Hibiki.Tag.changeset(%{name: name, type: type, value: value})
     |> Hibiki.Repo.insert()
   end
 
@@ -20,13 +57,13 @@ defmodule Hibiki.Tag do
   @spec update(Hibiki.Tag.t(), map) :: {:ok, Hibiki.Tag.t()} | {:error, any}
   def update(tag, changes) do
     tag
-    |> Hibiki.Tag.Schema.changeset(changes)
+    |> Hibiki.Tag.changeset(changes)
     |> Hibiki.Repo.update()
   end
 
   @spec get_by_creator(Hibiki.Entity.t()) :: [Hibiki.Tag.t()]
   def get_by_creator(creator) do
-    from(t in Hibiki.Tag.Schema,
+    from(t in Hibiki.Tag,
       where: t.creator_id == ^creator.id
     )
     |> Hibiki.Repo.all()
@@ -34,7 +71,7 @@ defmodule Hibiki.Tag do
 
   @spec get_by_scope(Hibiki.Entity.t()) :: [Hibiki.Tag.t()]
   def get_by_scope(scope) do
-    from(t in Hibiki.Tag.Schema,
+    from(t in Hibiki.Tag,
       where: t.scope_id == ^scope.id
     )
     |> Hibiki.Repo.all()
@@ -42,7 +79,7 @@ defmodule Hibiki.Tag do
 
   @spec by_name(String.t(), Hibiki.Entity.t()) :: Hibiki.Tag.t() | nil
   def by_name(name, scope) do
-    from(t in Hibiki.Tag.Schema,
+    from(t in Hibiki.Tag,
       where: t.scope_id == ^scope.id,
       where: t.name == ^name
     )
