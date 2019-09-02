@@ -6,17 +6,20 @@ defmodule Hibiki.Handler do
   """
   @impl LineSDK.Handler
   def handle(%{"message" => message} = event, opts) do
-    handle_message(message, event, opts)
+    IO.inspect(message)
+    Hibiki.Handler.Message.handle(message, event, opts)
   end
 
   def handle(_, _) do
     {:error, "unimplemented event handler"}
   end
+end
 
+defmodule Hibiki.Handler.Message do
   @doc """
   Handle message, receives (message, event, opts)
   """
-  def handle_message(
+  def handle(
         %{"type" => "text", "text" => text},
         event,
         opts
@@ -30,7 +33,11 @@ defmodule Hibiki.Handler do
     end
   end
 
-  def handle_message(_, _, _) do
+  def handle(%{"type" => "image", "id" => image_id}, event, opts) do
+    Hibiki.Handler.Message.Image.handle(image_id, event, opts)
+  end
+
+  def handle(_, _, _) do
     {:error, "unimplemented handle message"}
   end
 end
@@ -107,5 +114,21 @@ defmodule Hibiki.Handler.Message.Text do
     Logger.metadata(token: nil, args: nil, ctx: nil, command: nil)
 
     ctx
+  end
+end
+
+defmodule Hibiki.Handler.Message.Image do
+  alias Hibiki.Command.Context
+
+  def handle(image_id, event, client: client) do
+    ctx = %Context{event: event, client: client}
+
+    scope_id = Context.Source.scope_id(ctx)
+    scope_type = Context.Source.scope_type(ctx)
+    scope = Hibiki.Entity.create_or_get(scope_id, scope_type)
+
+    Hibiki.Entity.Data.set(scope, :last_image_id, image_id)
+
+    {:ok}
   end
 end

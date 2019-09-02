@@ -32,8 +32,6 @@ defmodule Hibiki.Tag.Command.Info do
     creator = tag.creator
 
     with {:ok, creator_info} <- LineSDK.Client.get_profile(ctx.client, creator.line_id) do
-      IO.inspect(creator_info)
-
       msg =
         [
           "[ #{tag.name} ]",
