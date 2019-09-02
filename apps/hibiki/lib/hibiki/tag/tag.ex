@@ -94,6 +94,12 @@ defmodule Hibiki.Tag do
     scopes = [user, scope, Hibiki.Entity.global()]
     name = String.downcase(name)
 
+    get_from_tiered_scope(name, scopes)
+  end
+
+  @spec get_from_tiered_scope(String.t(), [Hibiki.Entity.t()]) ::
+          Hibiki.Tag.t() | nil
+  def get_from_tiered_scope(name, scopes) do
     scopes
     |> Enum.dedup()
     |> Enum.reduce(nil, fn sc, acc ->
