@@ -1,7 +1,7 @@
-defmodule Hibiki.Upload.Lib do
-  def upload_base64_to_catbox(string) do
+defmodule Hibiki.Upload.Provider.Catbox do
+  @spec upload_binary(binary) :: {:ok, String.t()} | {:error, any}
+  def upload_binary(binary) do
     with {:ok, path} <- Temp.path(),
-         {:ok, binary} <- Base.decode64(string),
          :ok <- File.write(path, binary),
          {:ok, mime} <- mime_file(path),
          ext = mime |> :mimerl.mime_to_exts() |> hd do

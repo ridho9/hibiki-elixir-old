@@ -1,6 +1,6 @@
 defmodule Hibiki.Calc.Command do
   use Hibiki.Command
-  import Hibiki.Upload.Lib, only: [upload_base64_to_catbox: 1]
+  import Hibiki.Upload, only: [upload_base64_to_catbox: 1]
 
   def name, do: "calc"
 
