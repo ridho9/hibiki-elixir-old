@@ -33,6 +33,7 @@ defmodule Hibiki.Entity.Data do
     dets_value = value
 
     res = :dets.insert(table, {dets_key, dets_value})
+    :dets.sync(table)
     {:reply, res, {table}}
   end
 
