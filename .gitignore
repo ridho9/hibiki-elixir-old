@@ -25,5 +25,5 @@ erl_crash.dump
 config/dev.exs
 config/prod.exs
 
-.envrc
-entity_data_dets
+.env
+*_dets

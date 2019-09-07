@@ -3,6 +3,7 @@ defmodule Hibiki.Entity do
 
   import Ecto.Changeset
   alias Hibiki.Repo
+  alias Hibiki.Command.Context.Source
 
   schema "entities" do
     field(:line_id, :string)
@@ -47,6 +48,13 @@ defmodule Hibiki.Entity do
       entity ->
         entity
     end
+  end
+
+  @spec scope_from_context(Hibiki.Command.Context.t()) :: Hibiki.Entity.t()
+  def scope_from_context(ctx) do
+    source_id = Source.scope_id(ctx)
+    source_type = Source.scope_type(ctx)
+    create_or_get(source_id, source_type)
   end
 
   @spec create(String.t(), String.t()) :: {:ok, t} | {:error, any}
