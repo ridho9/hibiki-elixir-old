@@ -48,6 +48,10 @@ defmodule Hibiki.Handler.Message.Text do
   alias Hibiki.Command.Context
   alias Hibiki.Command.Registry
 
+  def handle(text, _, _) when text == "" or text == nil do
+    :ok
+  end
+
   def handle(
         text,
         %{"reply_token" => reply_token} = event,
