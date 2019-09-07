@@ -1,5 +1,19 @@
+defmodule Hibiki.Upload.Provider do
+  @callback upload_binary(binary) :: {:ok, String.t()} | {:error, any}
+  @callback id :: atom
+
+  defmacro __using__(_opts) do
+    quote do
+      @behaviour Hibiki.Upload.Provider
+    end
+  end
+end
+
 defmodule Hibiki.Upload.Provider.Catbox do
-  @spec upload_binary(binary) :: {:ok, String.t()} | {:error, any}
+  use Hibiki.Upload.Provider
+
+  def id, do: :catbox
+
   def upload_binary(binary) do
     with {:ok, path} <- Temp.path(),
          :ok <- File.write(path, binary),

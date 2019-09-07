@@ -1,5 +1,7 @@
 defmodule Hibiki.Upload.Command do
   use Hibiki.Command
+  alias Hibiki.Upload
+  alias Hibiki.Upload.Provider
 
   def name, do: "upload"
 
@@ -21,11 +23,14 @@ defmodule Hibiki.Upload.Command do
         |> send_reply()
 
       image_id ->
-        case Hibiki.Cache.get({:uploaded_image, image_id}) do
+        provider = Provider.Catbox
+        cache_key = {:uploaded_image, image_id, provider.id}
+
+        case Hibiki.Cache.get(cache_key) do
           nil ->
             with {:ok, image_binary} <- LineSDK.Client.get_content(ctx.client, image_id),
-                 {:ok, image_url} <- Hibiki.Upload.Provider.Catbox.upload_binary(image_binary) do
-              Hibiki.Cache.set({:uploaded_image, image_id}, image_url)
+                 {:ok, image_url} <- Upload.upload_binary(provider, image_binary) do
+              Hibiki.Cache.set(cache_key, image_url)
               {:ok, image_url}
             end
 
