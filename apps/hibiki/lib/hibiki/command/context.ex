@@ -10,11 +10,11 @@ defmodule Hibiki.Command.Context do
   @type t :: %__MODULE__{
           client: LineSDK.Client.t(),
           messages: [any],
-          event: any,
+          event: map,
           replied: bool,
           command: module,
           args: map,
-          start_time: DateTime.t()
+          start_time: DateTime.t() | nil
         }
 
   alias __MODULE__
@@ -66,13 +66,13 @@ end
 defmodule Hibiki.Command.Context.Source do
   alias Hibiki.Command.Context
 
-  @spec user_id(Hibiki.Command.Context.t()) :: binary
+  @spec user_id(Context.t()) :: String.t()
   def user_id(%Context{event: %{"source" => %{"user_id" => user_id}}}), do: user_id
 
-  @spec scope_type(Hibiki.Command.Context.t()) :: binary
+  @spec scope_type(Context.t()) :: String.t()
   def scope_type(%Context{event: %{"source" => %{"type" => type}}}), do: type
 
-  @spec scope_id(Hibiki.Command.Context.t()) :: binary
+  @spec scope_id(Context.t()) :: String.t()
   def scope_id(%Context{event: %{"source" => source}}) do
     do_scope_id(source)
   end

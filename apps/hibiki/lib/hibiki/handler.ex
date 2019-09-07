@@ -6,7 +6,6 @@ defmodule Hibiki.Handler do
   """
   @impl LineSDK.Handler
   def handle(%{"message" => message} = event, opts) do
-    IO.inspect(message)
     Hibiki.Handler.Message.handle(message, event, opts)
   end
 
@@ -63,7 +62,7 @@ defmodule Hibiki.Handler.Message.Text do
            command: command
          },
          {:ok, _} <- call_command_handler(command, args, ctx) do
-      {:ok}
+      :ok
     else
       {:error, message} = err ->
         LineSDK.Client.send_reply(client, reply_token, %{
@@ -119,16 +118,14 @@ end
 
 defmodule Hibiki.Handler.Message.Image do
   alias Hibiki.Command.Context
+  alias Hibiki.Command.Context.Source
+  alias Hibiki.Entity
 
+  @spec handle(String.t(), map, client: LineSDK.Client.t()) :: :ok | {:error, any}
   def handle(image_id, event, client: client) do
-    ctx = %Context{event: event, client: client}
-
-    scope_id = Context.Source.scope_id(ctx)
-    scope_type = Context.Source.scope_type(ctx)
-    scope = Hibiki.Entity.create_or_get(scope_id, scope_type)
-
-    Hibiki.Entity.Data.set(scope, :last_image_id, image_id)
-
-    {:ok}
+    %Context{event: event, client: client}
+    |> Context.start_now()
+    |> Entity.scope_from_context()
+    |> Entity.Data.set(:last_image_id, image_id)
   end
 end
