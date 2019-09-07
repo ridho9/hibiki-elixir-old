@@ -1,6 +1,5 @@
 defmodule Hibiki.Tag.Command do
   use Hibiki.Command
-  import Hibiki.Command.Context.Source
 
   alias Hibiki.Entity
   alias Hibiki.Tag
@@ -20,11 +19,11 @@ defmodule Hibiki.Tag.Command do
   end
 
   def pre_handle_load_scope(args, ctx) do
-    user_id = user_id(ctx)
+    user_id = Source.user_id(ctx)
     user = Entity.create_or_get(user_id, "user")
 
-    scope_id = scope_id(ctx)
-    scope_type = scope_type(ctx)
+    scope_id = Source.scope_id(ctx)
+    scope_type = Source.scope_type(ctx)
     scope = Entity.create_or_get(scope_id, scope_type)
 
     args =
