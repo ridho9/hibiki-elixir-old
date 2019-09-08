@@ -44,3 +44,7 @@ defmodule Hibiki.Cache do
     :dets.close(table)
   end
 end
+
+defmodule Hibiki.Cache.Key do
+  def uploaded_image_url(image_id, provider_id), do: {:uploaded_image_url, image_id, provider_id}
+end

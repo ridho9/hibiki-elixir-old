@@ -24,20 +24,8 @@ defmodule Hibiki.Upload.Command do
 
       image_id ->
         provider = Provider.Catbox
-        cache_key = {:uploaded_image, image_id, provider.id}
 
-        case Hibiki.Cache.get(cache_key) do
-          nil ->
-            with {:ok, image_binary} <- LineSDK.Client.get_content(ctx.client, image_id),
-                 {:ok, image_url} <- Upload.upload_binary(provider, image_binary) do
-              Hibiki.Cache.set(cache_key, image_url)
-              {:ok, image_url}
-            end
-
-          image_url ->
-            {:ok, image_url}
-        end
-        |> case do
+        case Upload.upload_from_image_id(provider, image_id, ctx.client) do
           {:ok, image_url} ->
             ctx
             |> add_text_message(image_url)
