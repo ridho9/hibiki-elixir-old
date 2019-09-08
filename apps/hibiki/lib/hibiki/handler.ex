@@ -1,11 +1,18 @@
 defmodule Hibiki.Handler do
   @behaviour LineSDK.Handler
 
+  alias Hibiki.Command.Context
+
   @doc """
   Handle single event from WebhookEvent['events']
   """
   @impl LineSDK.Handler
   def handle(%{"message" => message} = event, opts) do
+    ctx =
+      %Context{event: event, client: opts[:client]}
+      |> Context.start_now()
+
+    opts = Map.put(opts, :context, ctx)
     Hibiki.Handler.Message.handle(message, event, opts)
   end
 
@@ -26,7 +33,7 @@ defmodule Hibiki.Handler.Message do
         event,
         opts
       ) do
-    cache_text_message(text, event, opts)
+    cache_text_message(text, opts)
 
     text
     |> String.trim()
@@ -45,9 +52,8 @@ defmodule Hibiki.Handler.Message do
     {:error, "unimplemented handle message"}
   end
 
-  defp cache_text_message(text, event, client: client) do
-    %Context{event: event, client: client}
-    |> Context.start_now()
+  defp cache_text_message(text, context: ctx) do
+    ctx
     |> Entity.scope_from_context()
     |> Entity.Data.set(Entity.Data.Key.last_text_message(), text)
   end
@@ -66,17 +72,14 @@ defmodule Hibiki.Handler.Message.Text do
 
   def handle(
         text,
-        %{"reply_token" => reply_token} = event,
-        client: client
+        %{"reply_token" => reply_token},
+        client: client,
+        context: ctx
       ) do
     with {:ok, command, args, _} <-
            Registry.command_from_text(Registry.Default.all(), text),
          {:ok, args} <- Options.Parser.parse(command.options, args),
-         ctx = %Context{
-           client: client,
-           event: event,
-           command: command
-         },
+         ctx = Map.put(ctx, :command, command),
          {:ok, _} <- call_command_handler(command, args, ctx) do
       :ok
     else
@@ -91,10 +94,7 @@ defmodule Hibiki.Handler.Message.Text do
   end
 
   def call_command_handler(command, args, ctx) do
-    ctx =
-      ctx
-      |> Context.start_now()
-      |> hook_command_start()
+    hook_command_start(ctx)
 
     result =
       with {:ok, args, ctx} <- command.pre_handle(args, ctx),
@@ -137,14 +137,13 @@ defmodule Hibiki.Handler.Message.Image do
   alias Hibiki.Command.Context.Source
   alias Hibiki.Entity
 
-  def handle(image_id, event, opts) do
-    cache_image_id(image_id, event, opts)
+  def handle(image_id, _event, opts) do
+    cache_image_id(image_id, opts)
     :ok
   end
 
-  defp cache_image_id(image_id, event, client: client) do
-    %Context{event: event, client: client}
-    |> Context.start_now()
+  defp cache_image_id(image_id, context: ctx) do
+    ctx
     |> Entity.scope_from_context()
     |> Entity.Data.set(Entity.Data.Key.last_image_id(), image_id)
   end

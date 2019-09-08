@@ -56,7 +56,9 @@ end
 defmodule Hibiki.Entity.Data.Key do
   @type t :: :last_image_id | :last_text_message
 
+  @spec last_image_id :: t
   def last_image_id, do: :last_image_id
 
+  @spec last_text_message :: t
   def last_text_message, do: :last_text_message
 end
