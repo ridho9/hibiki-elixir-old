@@ -130,6 +130,6 @@ defmodule Hibiki.Handler.Message.Image do
     %Context{event: event, client: client}
     |> Context.start_now()
     |> Entity.scope_from_context()
-    |> Entity.Data.set(:last_image_id, image_id)
+    |> Entity.Data.set(Entity.Data.Key.last_image_id(), image_id)
   end
 end
