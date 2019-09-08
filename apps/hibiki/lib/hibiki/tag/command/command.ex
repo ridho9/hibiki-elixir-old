@@ -13,7 +13,7 @@ defmodule Hibiki.Tag.Command do
     do:
       %Options{}
       |> Options.add_named("name", "tag name")
-      |> Options.add_named("r")
+      |> Options.add_flag("r")
 
   def pre_handle(args, ctx) do
     pre_handle_load_scope(args, ctx)
@@ -81,13 +81,13 @@ defmodule Hibiki.Tag.Command do
       Tag.Command.Info
     ]
 
-  defp handle_tag(tag, "image", true, ctx) do
+  defp handle_tag(tag, "image", false, ctx) do
     ctx
     |> add_image_message(tag.value)
     |> send_reply()
   end
 
-  defp handle_tag(tag, "image", false, ctx) do
+  defp handle_tag(tag, "image", true, ctx) do
     ctx
     |> add_text_message(tag.value)
     |> send_reply()
