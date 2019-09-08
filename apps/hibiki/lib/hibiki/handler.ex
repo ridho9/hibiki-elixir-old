@@ -15,6 +15,9 @@ defmodule Hibiki.Handler do
 end
 
 defmodule Hibiki.Handler.Message do
+  alias Hibiki.Command.Context
+  alias Hibiki.Entity
+
   @doc """
   Handle message, receives (message, event, opts)
   """
@@ -23,6 +26,8 @@ defmodule Hibiki.Handler.Message do
         event,
         opts
       ) do
+    cache_text_message(text, event, opts)
+
     text
     |> String.trim()
     |> String.starts_with?("!")
@@ -38,6 +43,13 @@ defmodule Hibiki.Handler.Message do
 
   def handle(_, _, _) do
     {:error, "unimplemented handle message"}
+  end
+
+  defp cache_text_message(text, event, client: client) do
+    %Context{event: event, client: client}
+    |> Context.start_now()
+    |> Entity.scope_from_context()
+    |> Entity.Data.set(Entity.Data.Key.last_text_message(), text)
   end
 end
 
@@ -125,8 +137,12 @@ defmodule Hibiki.Handler.Message.Image do
   alias Hibiki.Command.Context.Source
   alias Hibiki.Entity
 
-  @spec handle(String.t(), map, client: LineSDK.Client.t()) :: :ok | {:error, any}
-  def handle(image_id, event, client: client) do
+  def handle(image_id, event, opts) do
+    cache_image_id(image_id, event, opts)
+    :ok
+  end
+
+  defp cache_image_id(image_id, event, client: client) do
     %Context{event: event, client: client}
     |> Context.start_now()
     |> Entity.scope_from_context()

@@ -8,11 +8,11 @@ defmodule Hibiki.Command.Context do
             start_time: nil
 
   @type t :: %__MODULE__{
-          client: LineSDK.Client.t(),
+          client: LineSDK.Client.t() | nil,
           messages: [any],
-          event: map,
+          event: map | nil,
           replied: bool,
-          command: module,
+          command: module | nil,
           args: map,
           start_time: DateTime.t() | nil
         }
