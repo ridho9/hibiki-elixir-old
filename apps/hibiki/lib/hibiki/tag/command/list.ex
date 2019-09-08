@@ -25,7 +25,7 @@ defmodule Hibiki.Tag.Command.List do
 
     result =
       result
-      |> Enum.filter(fn x -> x != nil or x != "" end)
+      |> Enum.filter(fn x -> x != nil and x != "" end)
       |> Enum.join("\n\n")
 
     ctx
