@@ -5,7 +5,10 @@ defmodule Hibiki.Roll.Command do
 
   def description,
     do:
-      "Do a dnd roll, syntax from https://wiki.roll20.net/Dice_Reference#Roll20_Dice_Specification"
+      "Do a dnd roll, syntax from https://wiki.roll20.net/Dice_Reference. " <>
+        "Beware if you use too many dices the result might be too long for line to display. " <>
+        "Not my fault and I'm too lazy to fix that. " <>
+        "Currently only support * / + - and NdM notation."
 
   def options,
     do:
