@@ -34,6 +34,7 @@ defmodule Hibiki.MixProject do
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.1"},
       {:line_sdk, in_umbrella: true},
+      {:dice_roll, in_umbrella: true},
       {:mock, "~> 0.3.0", only: [:test]},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.4", only: [:dev]},

@@ -12,7 +12,8 @@ defmodule Hibiki.Command.Registry do
         H.Code.Command,
         H.Tag.Command,
         H.Ryn.Command,
-        H.Upload.Command
+        H.Upload.Command,
+        H.Roll.Command
       ]
   end
 
