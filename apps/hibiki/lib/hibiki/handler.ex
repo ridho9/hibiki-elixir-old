@@ -12,7 +12,8 @@ defmodule Hibiki.Handler do
       %Context{event: event, client: opts[:client]}
       |> Context.start_now()
 
-    opts = Map.put(opts, :context, ctx)
+    opts = Keyword.put(opts, :context, ctx)
+
     Hibiki.Handler.Message.handle(message, event, opts)
   end
 
@@ -52,8 +53,10 @@ defmodule Hibiki.Handler.Message do
     {:error, "unimplemented handle message"}
   end
 
-  defp cache_text_message(text, context: ctx) do
-    ctx
+  defp cache_text_message(text, opts) do
+    IO.inspect(opts)
+
+    opts[:context]
     |> Entity.scope_from_context()
     |> Entity.Data.set(Entity.Data.Key.last_text_message(), text)
   end
@@ -73,9 +76,11 @@ defmodule Hibiki.Handler.Message.Text do
   def handle(
         text,
         %{"reply_token" => reply_token},
-        client: client,
-        context: ctx
+        opts
       ) do
+    ctx = opts[:context]
+    client = opts[:client]
+
     with {:ok, command, args, _} <-
            Registry.command_from_text(Registry.Default.all(), text),
          {:ok, args} <- Options.Parser.parse(command.options, args),
