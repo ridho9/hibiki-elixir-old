@@ -54,8 +54,6 @@ defmodule Hibiki.Handler.Message do
   end
 
   defp cache_text_message(text, opts) do
-    IO.inspect(opts)
-
     opts[:context]
     |> Entity.scope_from_context()
     |> Entity.Data.set(Entity.Data.Key.last_text_message(), text)
