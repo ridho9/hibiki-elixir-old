@@ -147,8 +147,8 @@ defmodule Hibiki.Handler.Message.Image do
     :ok
   end
 
-  defp cache_image_id(image_id, context: ctx) do
-    ctx
+  defp cache_image_id(image_id, opts) do
+    opts[:context]
     |> Entity.scope_from_context()
     |> Entity.Data.set(Entity.Data.Key.last_image_id(), image_id)
   end
