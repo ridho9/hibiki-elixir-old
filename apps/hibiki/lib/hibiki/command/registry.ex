@@ -13,7 +13,8 @@ defmodule Hibiki.Command.Registry do
         H.Tag.Command,
         H.Ryn.Command,
         H.Upload.Command,
-        H.Roll.Command
+        H.Roll.Command,
+        H.Case.Command
       ]
   end
 
