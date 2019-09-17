@@ -20,6 +20,7 @@ defmodule Hibiki.Case.Command do
       cond do
         m ->
           query
+          |> String.downcase()
           |> String.codepoints()
           |> Enum.map_every(2, fn x -> String.upcase(x) end)
           |> Enum.join()
