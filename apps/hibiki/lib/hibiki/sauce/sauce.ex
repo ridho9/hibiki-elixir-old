@@ -25,6 +25,5 @@ defmodule Hibiki.Sauce do
   def sauce_all_provider(image_url) do
     all_provider()
     |> Enum.map(fn p -> p.sauce(image_url) end)
-    |> Enum.join("\n")
   end
 end

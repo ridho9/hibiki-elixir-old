@@ -45,7 +45,8 @@ defmodule Hibiki.Sauce.Command do
   end
 
   def handle(%{"url" => url}, ctx) do
-    res = "May the sauce be with you: \n" <> Sauce.sauce_all_provider(url)
+    res = url |> Sauce.sauce_all_provider() |> Enum.map(fn x -> "> #{x}" end) |> Enum.join("\n")
+    res = "May the sauce be with you: \n" <> res
 
     ctx
     |> add_text_message(res)
