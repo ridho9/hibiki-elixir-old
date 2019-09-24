@@ -1,5 +1,6 @@
 defmodule Hibiki.Upload do
   alias Hibiki.Upload.Provider.Catbox
+  alias Hibiki.Upload.Provider.Tenshi
   alias Hibiki.Cache
   alias Hibiki.Upload
 

@@ -29,7 +29,7 @@ defmodule Hibiki.Sauce.Command do
         |> send_reply()
 
       image_id ->
-        provider = Upload.Provider.Catbox
+        provider = Upload.Provider.Tenshi
 
         case Upload.upload_from_image_id(provider, image_id, ctx.client) do
           {:ok, image_url} ->
