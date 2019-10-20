@@ -39,7 +39,7 @@ defmodule Hibiki.Tag.Command.List do
     |> send_reply()
   end
 
-  defp list_tag_in_scope(scope, keyword \\ "") do
+  defp list_tag_in_scope(scope, keyword) do
     scope
     |> Hibiki.Tag.get_by_scope()
     |> Enum.map(fn x -> x.name end)
