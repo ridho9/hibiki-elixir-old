@@ -28,13 +28,8 @@ defmodule Hibiki.Tag do
     |> validate_inclusion(:type, ["image", "text"])
     |> validate_length(:name, max: 20)
     |> validate_length(:value, max: 500)
-    |> (fn cs ->
-          if cs.changes[:type] == "image" do
-            validate_format(cs, :value, ~r/^https:\/\//, message: "must starts with 'https://'")
-          else
-            cs
-          end
-        end).()
+    |> validate_tag_image_value()
+    |> validate_tag_name()
     |> unique_constraint(:name, name: :tags_scope_id_name_index)
   end
 
@@ -112,5 +107,27 @@ defmodule Hibiki.Tag do
     |> Enum.reduce(nil, fn sc, acc ->
       acc || Hibiki.Tag.by_name(name, sc)
     end)
+  end
+
+  defp validate_tag_image_value(cs) do
+    import Ecto.Changeset
+    type = get_field(cs, :type)
+
+    if type == "image" do
+      validate_format(cs, :value, ~r/^https:\/\//, message: "must starts with 'https://'")
+    else
+      cs
+    end
+  end
+
+  defp validate_tag_name(cs) do
+    import Ecto.Changeset
+    name = get_field(cs, :name)
+
+    if String.contains?(name, ["\n", "#"]) do
+      add_error(cs, :name, "can't contain newline or #")
+    else
+      cs
+    end
   end
 end
