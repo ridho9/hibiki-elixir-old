@@ -28,6 +28,13 @@ defmodule Hibiki.Tag do
     |> validate_inclusion(:type, ["image", "text"])
     |> validate_length(:name, max: 20)
     |> validate_length(:value, max: 500)
+    |> (fn cs ->
+          if cs.changes[:type] == "image" do
+            validate_format(cs, :value, ~r/^https:\/\//, message: "must starts with 'https://'")
+          else
+            cs
+          end
+        end).()
     |> unique_constraint(:name, name: :tags_scope_id_name_index)
   end
 
