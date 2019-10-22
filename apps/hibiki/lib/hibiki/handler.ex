@@ -44,6 +44,10 @@ defmodule Hibiki.Handler.Message do
         _ -> text
       end
 
+    if not String.starts_with?(text, "!") do
+      put_text_history(text, event, opts)
+    end
+
     text
     |> String.trim()
     |> String.starts_with?("!")
@@ -65,6 +69,12 @@ defmodule Hibiki.Handler.Message do
     opts[:context]
     |> Entity.scope_from_context()
     |> Entity.Data.set(Entity.Data.Key.last_text_message(), text)
+  end
+
+  defp put_text_history(message, event, opts) do
+    opts[:context]
+    |> Entity.scope_from_context()
+    |> Entity.Data.put_text_history({message, event["source"]})
   end
 end
 

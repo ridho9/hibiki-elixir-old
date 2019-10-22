@@ -19,6 +19,10 @@ defmodule Hibiki.Entity.Data do
     GenServer.call(__MODULE__, {:get, {entity, key}})
   end
 
+  def put_text_history(entity, message) do
+    GenServer.cast(__MODULE__, {:put_text_history, {entity, message}})
+  end
+
   ## Server Callback
 
   def init(args) do
@@ -47,6 +51,28 @@ defmodule Hibiki.Entity.Data do
     end
   end
 
+  def handle_cast({:put_text_history, {entity, message}}, {table}) do
+    dets_key = {entity.line_id, Key.text_history()}
+
+    history =
+      case :dets.lookup(table, dets_key) do
+        [] -> []
+        [{^dets_key, result}] -> result
+      end
+
+    history =
+      if length(history) >= 10 do
+        List.pop_at(history, 0) |> elem(1)
+      else
+        history
+      end
+
+    history = history ++ [message]
+    :dets.insert(table, {dets_key, history})
+
+    {:noreply, {table}}
+  end
+
   def terminate(_reason, {table}) do
     Logger.info("Terminating Hibiki.Entity.Data")
     :dets.close(table)
@@ -61,4 +87,6 @@ defmodule Hibiki.Entity.Data.Key do
 
   @spec last_text_message :: t
   def last_text_message, do: :last_text_message
+
+  def text_history, do: :text_history
 end
