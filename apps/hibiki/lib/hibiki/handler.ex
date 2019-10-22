@@ -36,6 +36,10 @@ defmodule Hibiki.Handler.Message do
       ) do
     cache_text_message(text, opts)
 
+    if not String.starts_with?(text, "!") do
+      put_text_history(text, event, opts)
+    end
+
     # check regex
     text =
       Regex.run(~r/#([^\n#]+)#/, text)
@@ -43,10 +47,6 @@ defmodule Hibiki.Handler.Message do
         [_, tag] -> "!tag - #{tag}"
         _ -> text
       end
-
-    if not String.starts_with?(text, "!") do
-      put_text_history(text, event, opts)
-    end
 
     text
     |> String.trim()
