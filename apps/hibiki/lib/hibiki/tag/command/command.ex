@@ -13,7 +13,8 @@ defmodule Hibiki.Tag.Command do
     do:
       %Options{}
       |> Options.add_named("name", "tag name")
-      |> Options.add_flag("r")
+      |> Options.add_flag("r", "raw")
+      |> Options.add_flag("s", "silent")
 
   def pre_handle(args, ctx) do
     pre_handle_load_scope(args, ctx)
@@ -66,9 +67,9 @@ defmodule Hibiki.Tag.Command do
     end
   end
 
-  def handle(%{"name" => name, "scope" => scope, "user" => user, "r" => raw}, ctx) do
+  def handle(%{"name" => name, "scope" => scope, "user" => user, "r" => raw, "s" => silent}, ctx) do
     case Tag.get_from_tiered_scope(name, scope, user) do
-      nil -> handle_tag_nil(name, scope, ctx)
+      nil -> handle_tag_nil(name, scope, silent, ctx)
       tag -> handle_tag(tag, tag.type, raw, ctx)
     end
   end
@@ -99,9 +100,13 @@ defmodule Hibiki.Tag.Command do
     |> send_reply()
   end
 
-  defp handle_tag_nil(name, scope, ctx) do
+  defp handle_tag_nil(name, scope, false, ctx) do
     ctx
     |> add_error("Tag '#{name}' not found in this #{scope.type}")
     |> send_reply()
+  end
+
+  defp handle_tag_nil(_name, _scope, true, ctx) do
+    ctx
   end
 end

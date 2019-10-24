@@ -154,8 +154,6 @@ defmodule Hibiki.Handler.Message.Text do
 end
 
 defmodule Hibiki.Handler.Message.Image do
-  alias Hibiki.Command.Context
-  alias Hibiki.Command.Context.Source
   alias Hibiki.Entity
 
   def handle(image_id, _event, opts) do
