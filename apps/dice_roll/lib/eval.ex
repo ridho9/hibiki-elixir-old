@@ -1,4 +1,6 @@
 defmodule DiceRoll.Eval do
+  @max_count 999_999
+
   def eval(int: [value]) do
     {:ok, value, "#{value}"}
   end
@@ -7,12 +9,12 @@ defmodule DiceRoll.Eval do
     eval(simple_dice: [1, dice_side])
   end
 
-  def eval(simple_dice: [dice_count, _]) when dice_count > 9999 do
-    {:error, "dice count cannot be more that 9999"}
+  def eval(simple_dice: [dice_count, _]) when dice_count > @max_count do
+    {:error, "dice count cannot be more that #{@max_count}"}
   end
 
-  def eval(simple_dice: [_, dice_side]) when dice_side > 9999 do
-    {:error, "dice side cannot be more that 9999"}
+  def eval(simple_dice: [_, dice_side]) when dice_side > @max_count do
+    {:error, "dice side cannot be more that #{@max_count}"}
   end
 
   def eval(simple_dice: [1, dice_side]) do
