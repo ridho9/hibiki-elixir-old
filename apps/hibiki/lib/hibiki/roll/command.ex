@@ -19,7 +19,7 @@ defmodule Hibiki.Roll.Command do
     case DiceRoll.roll(query) do
       {:ok, res_val, res_repr} ->
         ctx
-        |> add_text_message("#{query}\n= #{res_repr} = #{res_val}")
+        |> add_text_message("#{query} = #{res_val}")
         |> send_reply()
 
       {:error, err} ->
