@@ -16,7 +16,8 @@ defmodule Hibiki.Command.Registry do
         H.Roll.Command,
         H.Case.Command,
         # H.History.Command,
-        H.Sauce.Command
+        H.Sauce.Command,
+        H.Meme.Command
       ]
   end
 

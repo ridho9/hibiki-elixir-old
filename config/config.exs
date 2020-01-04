@@ -22,7 +22,9 @@ config :hibiki, Hibiki.Repo,
   database: "hibiki",
   username: "user",
   password: "pass",
-  hostname: "localhost"
+  hostname: "localhost",
+  imgflip_username: "username",
+  imgflip_password: "password"
 
 config :logger, :console,
   metadata: [:token],
