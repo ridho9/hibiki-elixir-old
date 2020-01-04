@@ -179,6 +179,13 @@ defmodule Hibiki.Command.Options.Parser do
       length(options.named_key) == 1 ->
         key = hd(options.named_key)
 
+        input =
+          if String.at(input, 0) in ["\"", "'", "`"] do
+            String.slice(input, 1..-2)
+          else
+            input
+          end
+
         result = Map.put(result, key, input)
 
         {:ok, result}
