@@ -28,6 +28,8 @@ defmodule LineSDK.Plug do
 
   def check_signature_exists(conn, _opts) do
     if get_req_header(conn, "x-line-signature") == [] do
+      IO.inspect "missing x-line-signature"
+
       conn
       |> send_resp(401, "missing x-line-signature")
       |> halt()
@@ -42,6 +44,8 @@ defmodule LineSDK.Plug do
     if String.starts_with?(content_type, "application/json") do
       conn
     else
+      IO.inspect "not json"
+
       conn
       |> send_resp(400, "is not json")
       |> halt()
@@ -55,6 +59,8 @@ defmodule LineSDK.Plug do
     if LineSDK.Auth.signature_match?(raw_body, client.channel_secret, signature) do
       conn
     else
+      IO.inspect "invalid signature got #{signature} expect #{LineSDK.Auth.calculate_signature(raw_body, client.channel_secret)}"
+
       conn
       |> send_resp(401, "invalid signature")
       |> halt
